@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang=fr dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Martin Cubaud">
+    <meta http-equiv=“Content-Security-Policy” content=“default-src ‘self’ gap://ready file://* *; style-src ‘self’ ‘unsafe-inline’; script-src ‘self’ ‘unsafe-inline’ ‘unsafe-eval’”/>
+    <title>Retrouver les rues de Lyon</title>
+    <link rel="shortcut icon" type="image/png" href="../Geography Dash/images/routard.gif"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.css">
+   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.Default.css">
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+   <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.1/leaflet.markercluster.js'></script>
+   <script src="http://code.jquery.com/jquery-2.1.1.js"></script>
+   <script src="https://d3js.org/d3.v7.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+  <style>
+    #mapid {height:100% ;}
+  </style>
+  <link rel="stylesheet" href="balades.css"/>
+  </head>
+<body>
+  <header>
+    <div id="haut_gauche">
+      <!--<button id="localize"></button>-->
+    </div>
+    <h1 id='titre'>Retrouver les rues de Lyon</h1>
+    <div id="boutons">
+      <p id="score">0 % des rues trouvées</p>
+    </div>
+  </header>
+  <div id="ecran_du_jeu">
+    <div id="mapid"></div>
+  </div>
+  <div id="recherche">
+    <div></div>
+    <div id="boutons_milieu_bas">
+      <div id="barre_adresse">
+        <input type="text" placeholder="Adresse" class="form-control form-control-sm" id="inputAdresse" name="adresse">
+        <button id="btn-recherche" type="button" class="btn btn-secondary  btn-shadow">Soumettre</button>
+      </div>
+    </div>
+    <div id="div_found">
+		<h3 style="color:white;">Rues trouvées</h3>
+		<ul id="list_found">
+		</ul>
+	</div>
+  </div>
+  </body>
+
+<script src="balades.js"></script>
+
+
+</body>
+</html>
