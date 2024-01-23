@@ -95,15 +95,16 @@ function chercher(){
     console.log(adresse)
     if(adresse != ""){
 		any_ok = false;
-		for(i in polylines){
-			if(!trouves[i] & are_similar(adresse, names[i])){
-                console.log(names[i])
+		for(let i in polylines){
+            name2 = names[i]
+			if(!trouves[i] & are_similar(adresse, name2)){
+                console.log(name2)
 				polylines[i].setStyle({"color":"green"});
-				polylines[i].bindTooltip(names[i]);
+				polylines[i].bindTooltip(name2);
 				any_ok = true;
 				find_length += polylines[i].length;
 				trouves[i] = true;
-				document.getElementById("list_found").innerHTML+="<li>"+names[i]+"</li>";
+				document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
 			}
 		}
 		if(any_ok){
@@ -124,7 +125,7 @@ function standardize(str){
 	str =  str.toLowerCase().replace("-"," ").replace("œ","oe");
 	var lettres_accentuees = "àäâéèêëîïôöùüû".split("");
 	var lettres_normales =   "aaaeeeeiioouuu".split("");
-	for(i=0; i<lettres_normales.length; i++){
+	for(let i=0; i<lettres_normales.length; i++){
 		str = str.replace(lettres_accentuees[i], lettres_normales[i]);
 	}
 	return str
