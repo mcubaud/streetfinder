@@ -98,6 +98,7 @@ function chercher(){
 		any_ok = false;
 		for(i in polylines){
 			if(!trouves[i] & are_similar(adresse, names[i])){
+                console.log(names[i])
 				polylines[i].setStyle({"color":"green"});
 				polylines[i].bindTooltip(names[i]);
 				any_ok = true;
