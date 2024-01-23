@@ -6,6 +6,7 @@ layer=L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.pn
 
 
 var json_balades={};
+document.getElementById("div_found").style.height = document.getElementById("recherche").clientHeight+" px";
 
 var promise0 = new Promise((resolve, reject) => {
     fetch("rues.geojson")
@@ -92,13 +93,12 @@ document.getElementById("btn-recherche").onclick=chercher();
 
 function chercher(){
     var adresse = $("#inputAdresse").val();
-    console.log(adresse)
+    console.log(adresse);
     if(adresse != ""){
 		any_ok = false;
 		for(let i in polylines){
-            name2 = names[i]
+            name2 = names[i];
 			if(!trouves[i] & are_similar(adresse, name2)){
-                console.log(name2)
 				polylines[i].setStyle({"color":"green"});
 				polylines[i].bindTooltip(name2);
 				any_ok = true;
