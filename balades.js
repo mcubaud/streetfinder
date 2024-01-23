@@ -121,10 +121,10 @@ function chercher(){
 }
 
 function standardize(str){
-	str =  str.toLowerCase().replace("-"," ").replace("","oe");
+	str =  str.toLowerCase().replace("-"," ").replace("œ","oe");
 	var lettres_accentuees = "àäâéèêëîïôöùüû".split("");
 	var lettres_normales =   "aaaeeeeiioouuu".split("");
-	for(i=0; lettres_normales.length; i++){
+	for(i=0; i<lettres_normales.length; i++){
 		str = str.replace(lettres_accentuees[i], lettres_normales[i]);
 	}
 	return str
