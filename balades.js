@@ -31,7 +31,6 @@ promise
     var array = r.features
     for(var i=0; i<array.length;i++){
         var obj = array[i];
-        console.log(obj);
         lnglats = obj.geometry.coordinates;
         latlngs = lnglats.map(x => [x[1],x[0]])
         try{
