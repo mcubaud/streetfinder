@@ -1,4 +1,4 @@
-var lieu = "lyon";
+var lieu = "rennes";
 console.log(lieu);
 ///affichage de la carte
 if(lieu == "lyon"){
