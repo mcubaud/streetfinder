@@ -36,7 +36,7 @@ promise
         lnglats = obj.geometry.coordinates;
         latlngs = lnglats.map(x => [x[1],x[0]])
         try{
-            var polyline = L.polyline(latlngs, {color: '#fafafa'}).addTo(mymap);
+            var polyline = L.polyline(latlngs, {color: '#3b364b'}).addTo(mymap);
             /*polyline.bindPopup(`
             <H3>${obj.properties.name}</H3>
             <p>${obj.properties.Date}</p>
