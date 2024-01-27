@@ -734,29 +734,3 @@ input[type=range] {
     100%{height: 0%;}
 }
 
-@media (max-width: 1280px) {
-    body{
-        grid-template-rows: 70px 1fr 75px;
-    }
-    #btn-recherche{
-        margin: 0px;
-    }
-    
-}
-
-  @media (max-width: 1000px) {
-    header{
-        grid-template-columns: 100px 1fr 25%;
-    }
-    body{
-        grid-template-rows: 70px 1fr 90px;
-    }
-    #boutons_milieu_bas{
-        flex-direction: column;
-        align-items: center;
-    }
-
-    #recherche button{
-        margin: 0px;
-    }
-}
