@@ -20,6 +20,17 @@ h1 {
     text-align: center;
     
 }
+
+
+# titre {
+  font-size: 70px;
+  font-weight: 600;
+  background-image: linear-gradient(to left, #553c9a, #b393d3);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
 #choix_indices{
     display: flex;
     flex-direction: column;
