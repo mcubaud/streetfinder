@@ -1,4 +1,4 @@
-var lieu = "lyon"
+var lieu = "lyon";
 
 ///affichage de la carte
 if(lieu == "lyon"){
@@ -14,7 +14,6 @@ layer=L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.p
 
 
 var json_balades={};
-document.getElementById("div_found").style.height = document.getElementById("recherche").clientHeight+" px";
 
 var promise0 = new Promise((resolve, reject) => {
     if(lieu == "lyon"){
