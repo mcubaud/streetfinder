@@ -165,6 +165,10 @@ input{
     align-items: center;
 }
 
+#container_of_list_of_street{
+	height:100%;
+}
+
 #recherche{
     display: flex;
     justify-content: center;
