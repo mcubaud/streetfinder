@@ -46,7 +46,7 @@ h1 {
 header {
     background-color: ivory;
     display: grid;
-    grid-template-columns: 10% 1fr 10%;
+    grid-template-columns: 20% 60% 20%;
     grid-template-rows: 1fr;
 }
 
@@ -76,7 +76,7 @@ select{
 
 #ecran_du_jeu{
     display: grid;
-    grid-template-columns: 100%;
+    grid-template-columns: 80% auto;
 }
 
 button:hover, button:focus {
@@ -161,11 +161,13 @@ input{
     grid-column: 3;
     display:flex;
     justify-content: space-evenly;
+    flex-direction: column-reverse;
+    align-items: center;
 }
 
 #recherche{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-top: 5px;   
 }
 
@@ -511,18 +513,17 @@ input[type=range] {
 }
 
 #div_found{
-	width: 300px;
 	height: 100%;
 	background-color: black;
 	text-shadow: 1px 1px 3px white;
 	border: red;
 	border-width: 10px;
 	border-radius: 10px;
-	margin: 0px 15px 0px 0px;
+	margin: 0px 15px 0px 15px;
 }
 #list_found{
 	height:100%;
-	margin:0px
+	margin:0px;²
 	overflow: scroll;
 }
 
