@@ -105,7 +105,7 @@ function chercher(){
 				any_ok = true;
 				find_length += polylines[i].length;
 				trouves[i] = true;
-				if (!name2 in trouves_uniques){
+				if (!(name2 in trouves_uniques)){
 					document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
 					trouves_uniques.push(name2)
 				}
