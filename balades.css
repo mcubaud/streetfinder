@@ -7,7 +7,7 @@ body {
     background-color: gainsboro;
     margin: 0px;
     display: grid;
-    grid-template-rows: 50px 80% auto;
+    grid-template-rows: 70px 80% auto;
     overflow-x: hidden;
     overflow-y: visible;
 }
