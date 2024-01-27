@@ -1,5 +1,5 @@
 var lieu = "lyon";
-
+console.log(lieu);
 ///affichage de la carte
 if(lieu == "lyon"){
     var mymap = L.map('mapid').setView([45.75728373443727, 4.849433898925782], 13);
