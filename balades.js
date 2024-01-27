@@ -6,6 +6,7 @@ layer=L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.pn
 
 
 var json_balades={};
+document.getElementById("div_found").style.height = document.getElementById("recherche").clientHeight+" px";
 
 var promise0 = new Promise((resolve, reject) => {
     fetch("rues.geojson")
@@ -31,7 +32,6 @@ promise
     var array = r.features
     for(var i=0; i<array.length;i++){
         var obj = array[i];
-        console.log(obj);
         lnglats = obj.geometry.coordinates;
         latlngs = lnglats.map(x => [x[1],x[0]])
         try{
@@ -93,17 +93,18 @@ document.getElementById("btn-recherche").onclick=chercher();
 
 function chercher(){
     var adresse = $("#inputAdresse").val();
-    console.log(adresse)
+    console.log(adresse);
     if(adresse != ""){
 		any_ok = false;
-		for(i in polylines){
-			if(!trouves[i] & are_similar(adresse, names[i])){
+		for(let i in polylines){
+            name2 = names[i];
+			if(!trouves[i] & are_similar(adresse, name2)){
 				polylines[i].setStyle({"color":"green"});
-				polylines[i].bindTooltip(names[i]);
+				polylines[i].bindTooltip(name2);
 				any_ok = true;
 				find_length += polylines[i].length;
 				trouves[i] = true;
-				document.getElementById("list_found").innerHTML+="<li>"+names[i]+"</li>";
+				document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
 			}
 		}
 		if(any_ok){
@@ -124,7 +125,7 @@ function standardize(str){
 	str =  str.toLowerCase().replace("-"," ").replace("œ","oe");
 	var lettres_accentuees = "àäâéèêëîïôöùüû".split("");
 	var lettres_normales =   "aaaeeeeiioouuu".split("");
-	for(i=0; i<lettres_normales.length; i++){
+	for(let i=0; i<lettres_normales.length; i++){
 		str = str.replace(lettres_accentuees[i], lettres_normales[i]);
 	}
 	return str
