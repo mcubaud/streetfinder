@@ -1,6 +1,6 @@
 ///affichage de la carte
 var mymap = L.map('mapid').setView([45.75728373443727, 4.849433898925782], 13);
-layer=L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png', {
+layer=L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
   attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
 }).addTo(mymap);
 
@@ -36,7 +36,7 @@ promise
         lnglats = obj.geometry.coordinates;
         latlngs = lnglats.map(x => [x[1],x[0]])
         try{
-            var polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
+            var polyline = L.polyline(latlngs, {color: 'black'}).addTo(mymap);
             /*polyline.bindPopup(`
             <H3>${obj.properties.name}</H3>
             <p>${obj.properties.Date}</p>
