@@ -15,6 +15,7 @@ var promise0 = new Promise((resolve, reject) => {
     .then(r => r.json())
     .then(r => {
         json_balades = r;
+	console.log(json_balades);
         promise = new Promise((resolve, reject) => {
             resolve(json_balades);
         });
