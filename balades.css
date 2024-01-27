@@ -12,6 +12,11 @@ body {
     overflow-y: visible;
 }
 
+#titre{
+	display: flex;
+	justify-content: center;
+}
+
 h1 {
     grid-row: 1;
     grid-column: 2;
