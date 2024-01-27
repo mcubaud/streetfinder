@@ -122,7 +122,8 @@ function chercher(){
 				trouves[i] = true;
 				if (!trouves_uniques.includes(name2)){
 					document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
-					trouves_uniques.push(name2)
+					trouves_uniques.push(name2);
+					console.log(name2);
 				}
 			}
 		}
