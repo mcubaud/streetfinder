@@ -7,7 +7,7 @@ body {
     background-color: gainsboro;
     margin: 0px;
     display: grid;
-    grid-template-rows: 50px 1fr 90px;
+    grid-template-rows: 50px 80% auto;
     overflow-x: hidden;
     overflow-y: visible;
 }
@@ -528,7 +528,7 @@ input[type=range] {
 #list_found{
 	height:90%;
 	margin:0px;
-	overflow: scroll;
+	overflow: auto;
 }
 
 #btns_couleur{
