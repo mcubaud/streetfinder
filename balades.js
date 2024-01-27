@@ -1,10 +1,10 @@
-var lieu = "rennes";
+var lieu = "Lyon";
 console.log(lieu);
 ///affichage de la carte
-if(lieu == "lyon"){
+if(lieu == "Lyon"){
     var mymap = L.map('mapid').setView([45.75728373443727, 4.849433898925782], 13);
 }
-if(lieu == "rennes"){
+if(lieu == "Rennes"){
     var mymap = L.map('mapid').setView([48.11105621460431, -1.676739113603782], 13);
 }
 
@@ -16,10 +16,10 @@ layer=L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.p
 var json_balades={};
 
 var promise0 = new Promise((resolve, reject) => {
-    if(lieu == "lyon"){
+    if(lieu == "Lyon"){
         var geojson = "rues.geojson";
     }
-    if(lieu == "rennes"){
+    if(lieu == "Rennes"){
         var geojson = "rues_rennes.geojson";
     }
     fetch(geojson)
