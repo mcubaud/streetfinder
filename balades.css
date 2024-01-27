@@ -522,8 +522,8 @@ input[type=range] {
 	margin: 0px 15px 0px 15px;
 }
 #list_found{
-	height:100%;
-	margin:0px;²
+	height:90%;
+	margin:0px;
 	overflow: scroll;
 }
 
