@@ -60,6 +60,7 @@ promise
 function print_score(){
 	document.getElementById("score").innerHTML = Math.round(find_length/1000)+ " / "+Math.round(total_length/1000)+" km ("+Math.round(100*find_length/total_length)+"%) des rues trouvées";
 	document.getElementById("score").style["color"] = couleur_par_score(find_length/total_length);
+	document.getElementById("file").value = Math.round(100*find_length/total_length);
 }
 
 
