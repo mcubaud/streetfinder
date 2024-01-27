@@ -23,6 +23,18 @@ h1 {
     -webkit-background-clip: text;
     text-align: center;}
 
+#progres {
+  width: 100%;
+  background-color: grey;
+}
+
+#barre {
+  width: 1%;
+  height: 30px;
+  background-color: green;
+}
+
+
 #choix_indices{
     display: flex;
     flex-direction: column;
