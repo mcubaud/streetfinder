@@ -1,6 +1,13 @@
+var lieu = "lyon"
+
 ///affichage de la carte
-///var mymap = L.map('mapid').setView([45.75728373443727, 4.849433898925782], 13);
-var mymap = L.map('mapid').setView([48.11105621460431, -1.676739113603782], 13);
+if(lieu == "lyon"){
+    var mymap = L.map('mapid').setView([45.75728373443727, 4.849433898925782], 13);
+}
+if(lieu == "rennes"){
+    var mymap = L.map('mapid').setView([48.11105621460431, -1.676739113603782], 13);
+}
+
 layer=L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
   attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
 }).addTo(mymap);
@@ -10,8 +17,13 @@ var json_balades={};
 document.getElementById("div_found").style.height = document.getElementById("recherche").clientHeight+" px";
 
 var promise0 = new Promise((resolve, reject) => {
-    ///fetch("rues.geojson")
-    fetch("rues_rennes.geojson")
+    if(lieu == "lyon"){
+        var geojson = "rues.geojson";
+    }
+    if(lieu == "rennes"){
+        var geojson = "rues_rennes.geojson";
+    }
+    fetch(geojson)
     .then(r => r.json())
     .then(r => {
         json_balades = r;
@@ -211,5 +223,3 @@ function onLocationError(e) {
 }
 
 mymap.on('locationerror', onLocationError);
-
-
