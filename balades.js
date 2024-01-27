@@ -27,6 +27,7 @@ var find_length = 0;
 polylines = {};
 names = {};
 trouves = {};
+trouves_uniques = [];
 promise
 .then(r => {
     var array = r.features
@@ -104,7 +105,10 @@ function chercher(){
 				any_ok = true;
 				find_length += polylines[i].length;
 				trouves[i] = true;
-				document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
+				if (!name2 in trouves_uniques){
+					document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
+					trouves_uniques.push(name2)
+				}
 			}
 		}
 		if(any_ok){
