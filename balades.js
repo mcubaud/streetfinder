@@ -7,7 +7,7 @@ if( lieu === null){
 console.log(lieu);
 ///Changer le nom de la page
 document.getElementById("titre").children[0].innerHTML += lieu;
-document.title += lieu;
+document.title += " "+lieu;
 ///affichage de la carte
 if(lieu == "Lyon"){
     var mymap = L.map('mapid').setView([45.75728373443727, 4.849433898925782], 13);

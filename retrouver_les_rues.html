@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="author" content="Martin Cubaud">
     <meta http-equiv=“Content-Security-Policy” content=“default-src ‘self’ gap://ready file://* *; style-src ‘self’ ‘unsafe-inline’; script-src ‘self’ ‘unsafe-inline’ ‘unsafe-eval’”/>
-    <title>Retrouver les rues de ?</title>
+    <title>Retrouver les rues de </title>
     <link rel="shortcut icon" type="image/png" href="logo.png"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -30,22 +30,37 @@
       <!--<button id="localize"></button>-->
     </div>
     <div id='titre'>
-    <h1>Choisir une ville </h1>
+    <h1>Retrouver les rues de </h1>
     <h1 style="color: black;"> &#128269;</h1>
     </div>
     <div id="boutons">
-
+	<progress id="file" max="100" value="0">0%</progress>
+      <p id="score">0 % des rues trouvées</p>
     </div>
   </header>
-  <div id="mapid"></div>
+  <div id="ecran_du_jeu">
+    <div id="mapid"></div>
+    <div id="container_of_list_of_street">
+	<div id="div_found">
+		<h3 style="color:white;">Rues trouvées</h3>
+		<ul id="list_found">
+		</ul>
+	</div>
+    </div>
+  </div>
   <div id="recherche">
     <div></div>
-    <div id="boutons_milieu_bas"></div>
-    <div></div>
+    <div id="boutons_milieu_bas">
+      <div id="barre_adresse">
+        <input type="text" placeholder="Adresse" class="form-control form-control-sm" id="inputAdresse" name="adresse">
+        <button id="btn-recherche" type="button" class="btn btn-secondary  btn-shadow">Soumettre</button>
+      </div>
+    </div>
+    
   </div>
   </body>
 
-<script src="choisir_ville.js"></script>
+<script src="balades.js"></script>
 
 
 </body>
