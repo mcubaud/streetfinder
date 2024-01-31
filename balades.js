@@ -26,7 +26,6 @@ var promise0 = new Promise((resolve, reject) => {
     .then(r => r.json())
     .then(r => {
         json_balades = r;
-	console.log(json_balades);
         promise = new Promise((resolve, reject) => {
             resolve(json_balades);
         });
@@ -61,12 +60,13 @@ promise
             <p>${obj.properties.Date}</p>
             <p>${obj.properties.Longueur}</p>
             `)*/
-			polyline.nom = obj.properties.name;
-			polyline.length = obj.properties.length;
-			total_length += polyline.length;
-			polylines[i] = polyline
-			names[i] = obj.properties.name;
-			trouves[i] = false;
+		polyline.nom = obj.properties.name;
+		polyline.length = obj.properties.length;
+		total_length += polyline.length;
+		polylines[i] = polyline
+		names[i] = obj.properties.name;
+		trouves[i] = false;
+		console.log(polyline);
         }finally{
 			
         }
