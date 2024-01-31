@@ -153,8 +153,8 @@ function standardize(str){
 
 function are_similar(nom1, nom2){
 	var exact_match = nom1.toLowerCase().replace("-"," ")==nom2.toLowerCase().replace("-"," ");
-	var regex_rues = /rue |avenue |boulevard |cours |place |impasse |allée |ruelle |passage |pont |montée |quai |tunnel |grande rue /g;
-	var regex_stop_words = /le |la |l' |les |de |du |des |d' |un |une /g;
+	var regex_rues = /rue |avenue |boulevard |cours |place |impasse |allée |ruelle |passage |pont |montée |quai |tunnel |grande rue |montee |allee /g;
+	var regex_stop_words = /le |la |l' |les |de |du |des |d' |un |une |l |d /g;
 	const commonFirstNames = ['John', 'Michael', 'Alice'];
 
 	// Construct the regex pattern to match first names followed by last names
