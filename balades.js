@@ -66,9 +66,9 @@ promise
         }finally{
 			
         }
-        
+        print_score()
     }
-	print_score()
+	
 })
 
 
