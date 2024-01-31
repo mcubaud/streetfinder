@@ -6,30 +6,28 @@ layer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 var LyonIcon = L.icon({
     iconUrl: 'Blason_Ville_fr_Lyon.svg',
-    iconSize:     [38, 95], // size of the icon
-    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    iconSize:     [60, 60], // size of the icon
+    iconAnchor:   [30, 0], // point of the icon which will correspond to marker's location
 });
 
 var RennesIcon = L.icon({
     iconUrl: 'Blason_Ville_fr_Rennes.svg',
-    iconSize:     [38, 95], // size of the icon
-    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    iconSize:     [60, 60], // size of the icon
+    iconAnchor:   [30, 0], // point of the icon which will correspond to marker's location
 });
 
+var Lyon = "Lyon";
+var Rennes = "Rennes"
+
 L.marker([45.75728373443727, 4.849433898925782], {icon: LyonIcon}).addTo(mymap)
-    .bindPopup('<button onclick="choisir_Lyon">Choisir Lyon</button>')
+    .bindPopup('<button onclick="choisir(Lyon)">Choisir Lyon</button>')
     .openPopup();
 
 L.marker([48.11105621460431, -1.676739113603782], {icon: RennesIcon}).addTo(mymap)
-    .bindPopup('<button onclick="choisir_Rennes">Choisir Rennes</button>')
+    .bindPopup('<button onclick="choisir(Rennes)">Choisir Rennes</button>')
     .openPopup();
 
-function choisir_Lyon(){
-    localStorage.setItem("lieu", "Lyon");
-    document.location.href = "./retrouver_les_rues.html";
-}
-
-function choisir_Rennes(){
-    localStorage.setItem("lieu", "Rennes");
+function choisir(lieu){
+    localStorage.setItem("lieu", lieu);
     document.location.href = "./retrouver_les_rues.html";
 }
