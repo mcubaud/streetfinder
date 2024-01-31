@@ -116,8 +116,8 @@ inputVille.addEventListener('keydown', (e) => {
 document.getElementById("btn-recherche").onclick=chercher();
 
 
-function openPopup(truc){
-    truc.openPopup()
+function openTooltip(truc){
+    truc.openTooltip()
 }
 
 function chercher(){
@@ -135,7 +135,7 @@ function chercher(){
 				trouves[i] = true;
 				if (!trouves_uniques.includes(name2)){
 					document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
-                    document.getElementById("list_found").lastChild.onclick=function(){openPopup(polylines[i])}
+                    document.getElementById("list_found").lastChild.onclick=function(){openTooltip(polylines[i])}
 					trouves_uniques.push(name2);
 					console.log(name2);
 				}
@@ -265,7 +265,7 @@ function upload_save(saved_trouvees){
             }
             if (!trouves_uniques.includes(name2)){
                 document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
-                document.getElementById("list_found").lastChild.onclick=function(){openPopup(polylines[i])}
+                document.getElementById("list_found").lastChild.onclick=function(){openTooltip(polylines[i])}
                 trouves_uniques.push(name2);
             }
         }
