@@ -246,3 +246,22 @@ function downloadObjectAsJson(exportObj, exportName){
 document.getElementById("save").onclick = function(){
     downloadObjectAsJson(trouves, "streetfinder_save_"+lieu);
 }
+
+function upload_save(saved_trouvees){
+    for(let i in polylines){
+        name2 = names[i];
+        if(saved_trouvees[i]){
+            polylines[i].setStyle({"color":"green"});
+            polylines[i].bindTooltip(name2);
+            any_ok = true;
+            if (!trouves[i]){
+                find_length += polylines[i].length;
+                trouves[i] = true;
+            }
+            if (!trouves_uniques.includes(name2)){
+                document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
+                trouves_uniques.push(name2);
+            }
+        }
+    }
+}
