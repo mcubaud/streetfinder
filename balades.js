@@ -134,7 +134,8 @@ function chercher(){
 				find_length += polylines[i].length;
 				trouves[i] = true;
 				if (!trouves_uniques.includes(name2)){
-					document.getElementById("list_found").innerHTML+="<li onclick="+ openPopup(polylines[i])+">"+name2+"</li>";
+					document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
+                    document.getElementById("list_found").lastChild.onclick=function(){openPopup(polylines[i])}
 					trouves_uniques.push(name2);
 					console.log(name2);
 				}
@@ -263,7 +264,8 @@ function upload_save(saved_trouvees){
                 trouves[i] = true;
             }
             if (!trouves_uniques.includes(name2)){
-                document.getElementById("list_found").innerHTML+="<li onclick="+ openPopup(polylines[i]) +">"+name2+"</li>";
+                document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
+                document.getElementById("list_found").lastChild.onclick=function(){openPopup(polylines[i])}
                 trouves_uniques.push(name2);
             }
         }
