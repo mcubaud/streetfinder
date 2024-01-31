@@ -16,11 +16,11 @@ var RennesIcon = L.icon({
     iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
 });
 
-L.marker([45.75728373443727, 4.849433898925782], {icon: LyonIcon}).addTo(map)
+L.marker([45.75728373443727, 4.849433898925782], {icon: LyonIcon}).addTo(mymap)
     .bindPopup('<button onclick="choisir_Lyon">Choisir Lyon</button>')
     .openPopup();
 
-L.marker([48.11105621460431, -1.676739113603782], {icon: RennesIcon}).addTo(map)
+L.marker([48.11105621460431, -1.676739113603782], {icon: RennesIcon}).addTo(mymap)
     .bindPopup('<button onclick="choisir_Rennes">Choisir Rennes</button>')
     .openPopup();
 
