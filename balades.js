@@ -116,6 +116,10 @@ inputVille.addEventListener('keydown', (e) => {
 document.getElementById("btn-recherche").onclick=chercher();
 
 
+function openPopup(truc){
+    truc.openPopup()
+}
+
 function chercher(){
     var adresse = $("#inputAdresse").val();
     console.log(adresse);
@@ -130,7 +134,7 @@ function chercher(){
 				find_length += polylines[i].length;
 				trouves[i] = true;
 				if (!trouves_uniques.includes(name2)){
-					document.getElementById("list_found").innerHTML+="<li onclick="+ function(){polylines[i].openPopup()} +">"+name2+"</li>";
+					document.getElementById("list_found").innerHTML+="<li onclick="+ openPopup(polylines[i])+">"+name2+"</li>";
 					trouves_uniques.push(name2);
 					console.log(name2);
 				}
@@ -259,7 +263,7 @@ function upload_save(saved_trouvees){
                 trouves[i] = true;
             }
             if (!trouves_uniques.includes(name2)){
-                document.getElementById("list_found").innerHTML+="<li onclick="+ function(){polylines[i].openPopup()} +">"+name2+"</li>";
+                document.getElementById("list_found").innerHTML+="<li onclick="+ openPopup(polylines[i]) +">"+name2+"</li>";
                 trouves_uniques.push(name2);
             }
         }
