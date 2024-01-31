@@ -46,13 +46,9 @@ promise
     var array = r.features
     for(var i=0; i<array.length;i++){
         var obj = array[i];
-	if(lieu == "Lyon"){
-            lnglats = obj.geometry.coordinates;
-	    latlngs = lnglats.map(x => [x[1],x[0]])
+        lnglats = obj.geometry.coordinates;
+	latlngs = lnglats.map(x => [x[1],x[0]])
 	}
-	if(lieu == "Rennes"){
-	    latlngs = obj.geometry.coordinates;
-    	}
         try{
             var polyline = L.polyline(latlngs, {color: '#3b364b'}).addTo(mymap);
             /*polyline.bindPopup(`
