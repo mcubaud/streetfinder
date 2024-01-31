@@ -48,7 +48,6 @@ promise
         var obj = array[i];
         lnglats = obj.geometry.coordinates;
 	latlngs = lnglats.map(x => [x[1],x[0]]);
-	console.log(lnglats, latlngs);
 	
         try{
             var polyline = L.polyline(latlngs, {color: '#3b364b'}).addTo(mymap);
@@ -63,7 +62,6 @@ promise
 		polylines[i] = polyline
 		names[i] = obj.properties.name;
 		trouves[i] = false;
-		console.log(polyline);
         }finally{
 			
         }
