@@ -265,3 +265,11 @@ function upload_save(saved_trouvees){
         }
     }
 }
+
+document.getElementById("upload").onchange = function(){
+    file = document.getElementById("upload").files[0];
+    urlfile = URL.createObjectURL(file);
+    fetch(urlfile)
+    .then(r=>r.json())
+    .then(r=>upload_save(r))
+}
