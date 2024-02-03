@@ -4,7 +4,7 @@ html{
 
 body {
     height: 100%;
-    background-color: gainsboro;
+    background-color: #4e535e;
     margin: 0px;
     display: grid;
     grid-template-rows: 70px 80% auto;
@@ -20,13 +20,15 @@ body {
 h1 {
     grid-row: 1;
     grid-column: 2;
-    font-size: 20px;
+    font-size: 30px;
     font-weight: 600;
-    background-image: linear-gradient(to left, #553c9a, #b393d3);
-    color: transparent;
+    /*ackground-image: linear-gradient(to left, #553c9a, #b393d3);*/
+    color: white;
     background-clip: text;
     -webkit-background-clip: text;
-    text-align: center;}
+    text-align: center;
+    text-shadow: 2px 2px 1px #000;
+}
 
 #progres {
   width: 100%;
@@ -50,9 +52,12 @@ h1 {
 
 header {
     background-color: ivory;
+    background-image:url(https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/rennes-france-skyline-27-michael-tompsett.jpg);
     display: grid;
     grid-template-columns: 20% 60% 20%;
     grid-template-rows: 1fr;
+    background-size: 20%;
+    background-position-y: 40%;
 }
 
 button{
@@ -77,6 +82,8 @@ select{
 #mapid{
     height: 1fr;
     border: 1px solid black;
+    margin-left: 10px;
+    margin-top: 10px;
 }
 
 #ecran_du_jeu{
@@ -165,9 +172,19 @@ input{
     grid-row: 1;
     grid-column: 3;
     display:flex;
-    justify-content: space-evenly;
+    justify-content: center;
     flex-direction: column-reverse;
     align-items: center;
+}
+
+#score{
+    text-shadow: -1px -1px 2px black;
+    background-color: #ffffffb2;
+    padding: 3px;
+    border: 3px solid black;
+    border-radius: 10px;
+    margin-bottom: 0px;
+    margin-top: 3px;
 }
 
 #container_of_list_of_street{
