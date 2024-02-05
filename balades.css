@@ -711,6 +711,29 @@ input[type=range] {
     }
 
 }
+@keyframes secouer_petit_orange{
+    0%{
+        transform: rotateZ(0deg);
+        background-color: yellow;
+    }
+    25%{
+        transform: rotateZ(3deg);
+        background-color: orange;
+    }
+    50%{
+        transform: rotateZ(0deg);
+        background-color: yellow;
+    }
+    75%{
+        transform: rotateZ(-3deg);
+        background-color: orange;
+    }
+    100%{
+        transform: rotateZ(0deg);
+        background-color: white;
+    }
+
+}
 
 @keyframes clignoter_vert{
 	0%{

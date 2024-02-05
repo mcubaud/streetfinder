@@ -125,20 +125,28 @@ function chercher(){
     console.log(adresse);
     if(adresse != ""){
 		any_ok = false;
+        any_already = false;
 		for(let i in polylines){
             name2 = names[i];
-			if(!trouves[i] & are_similar(adresse, name2)){
-				polylines[i].setStyle({"color":"green"});
-				polylines[i].bindTooltip(name2);
-				any_ok = true;
-				find_length += polylines[i].length;
-				trouves[i] = true;
-				if (!trouves_uniques.includes(name2)){
-					document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
-                    document.getElementById("list_found").lastChild.onclick=function(){openTooltip(polylines[i])}
-					trouves_uniques.push(name2);
-					console.log(name2);
-				}
+			if(are_similar(adresse, name2)){
+                if(trouves[i]){
+                    any_already = true;
+                    last_already = polylines[i]
+                }
+                else{
+                    polylines[i].setStyle({"color":"green"});
+                    polylines[i].bindTooltip(name2);
+                    any_ok = true;
+                    find_length += polylines[i].length;
+                    trouves[i] = true;
+                    if (!trouves_uniques.includes(name2)){
+                        document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
+                        document.getElementById("list_found").lastChild.onclick=function(){openTooltip(polylines[i])}
+                        trouves_uniques.push(name2);
+                        console.log(name2);
+                    }
+                }
+				
 			}
 		}
 		if(any_ok){
@@ -147,7 +155,13 @@ function chercher(){
 			inputAdresse.style["animation"]="";
 			inputAdresse.style["animation"]="clignoter_vert 500ms linear";
 			setTimeout(x=>{inputAdresse.style["animation"]="";},1000);
-		}else{
+		}else if(any_already){
+            last_already.openPopup();
+            mymap.flyToBounds(last_already.getBounds());
+            inputAdresse.style["animation"]="";
+			inputAdresse.style["animation"]="secouer_petit_orange 1s linear";
+			setTimeout(x=>{inputAdresse.style["animation"]="";},1000);
+        }else{
 			inputAdresse.style["animation"]="";
 			inputAdresse.style["animation"]="secouer_petit 1s linear";
 			setTimeout(x=>{inputAdresse.style["animation"]="";},1000);
