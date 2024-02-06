@@ -153,8 +153,9 @@ function chercher(){
                     find_length += polylines[i].length;
                     trouves[i] = true;
                     if (!trouves_uniques.includes(name2)){
-                        document.getElementById("list_found").innerHTML+="<li id='list_found_"+name2+"'>"+name2+"</li>";
-                        document.getElementById("list_found_"+name2).onclick=function(){openTooltip(polylines[i])}
+                        var name_std = standardize(name2).replace("' ","_").replace(" ","_")
+                        document.getElementById("list_found").innerHTML+="<li id='list_found_"+name_std+"'>"+name2+"</li>";
+                        document.getElementById("list_found_"+name_std).onclick=function(){openTooltip(polylines[i])}
                         trouves_uniques.push(name2);
                         console.log(name2);
                     }
@@ -291,9 +292,11 @@ function upload_save(saved_trouvees){
                 trouves[i] = true;
             }
             if (!trouves_uniques.includes(name2)){
-                document.getElementById("list_found").innerHTML+="<li id='list_found_"+name2+"'>"+name2+"</li>";
-                document.getElementById("list_found_"+name2).onclick=function(){openTooltip(polylines[i])}
+                var name_std = standardize(name2).replace("' ","_").replace(" ","_")
+                document.getElementById("list_found").innerHTML+="<li id='list_found_"+name_std+"'>"+name2+"</li>";
+                document.getElementById("list_found_"+name_std).onclick=function(){openTooltip(polylines[i])}
                 trouves_uniques.push(name2);
+                console.log(name2);
             }
         }
     }
