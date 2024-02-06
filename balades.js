@@ -65,6 +65,11 @@ promise
             <p>${obj.properties.Longueur}</p>
             `)*/
 		polyline.nom = obj.properties.name;
+        other_tags = obj.properties.other_tags;
+        if (other_tags.includes("wikipedia")){
+            polyline.wiki = other_tags.split("wikipedia\"=>\"")[1].split("\"")[0];
+            console.log(polyline.wiki);
+        }
 		polyline.length = obj.properties.length;
 		total_length += polyline.length;
 		polylines[i] = polyline
@@ -136,12 +141,18 @@ function chercher(){
                 else{
                     polylines[i].setStyle({"color":"green"});
                     polylines[i].bindTooltip(name2);
+                    if(polylines[i].wiki){
+                        [langue, page]= polylines[i].wiki.split(":");
+                        polylines[i].bindPopup(
+                            "<iframe style='height:400px;' src='https://"+langue+".m.wikipedia.org/wiki/"+page+"'></iframe>"
+                        )
+                    }
                     any_ok = true;
                     find_length += polylines[i].length;
                     trouves[i] = true;
                     if (!trouves_uniques.includes(name2)){
-                        document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
-                        document.getElementById("list_found").lastChild.onclick=function(){openTooltip(polylines[i])}
+                        document.getElementById("list_found").innerHTML+="<li onclick='function(){openTooltip(polylines[i])}'>"+name2+"</li>";
+                        //document.getElementById("list_found").lastChild.onclick=function(){openTooltip(polylines[i])}
                         trouves_uniques.push(name2);
                         console.log(name2);
                     }
