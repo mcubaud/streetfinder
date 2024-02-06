@@ -153,8 +153,8 @@ function chercher(){
                     find_length += polylines[i].length;
                     trouves[i] = true;
                     if (!trouves_uniques.includes(name2)){
-                        document.getElementById("list_found").innerHTML+="<li onclick='function(){openTooltip(polylines[i])}'>"+name2+"</li>";
-                        //document.getElementById("list_found").lastChild.onclick=function(){openTooltip(polylines[i])}
+                        document.getElementById("list_found").innerHTML+="<li id='list_found_"+name2+"'>"+name2+"</li>";
+                        document.getElementById("list_found_"+name2).onclick=function(){openTooltip(polylines[i])}
                         trouves_uniques.push(name2);
                         console.log(name2);
                     }

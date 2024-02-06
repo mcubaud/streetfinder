@@ -556,6 +556,10 @@ input[type=range] {
 	overflow: auto;
 }
 
+#list_found li{
+    cursor: pointer;
+}
+
 #btns_couleur{
     display: flex;
 }
