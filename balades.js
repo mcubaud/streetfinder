@@ -153,7 +153,8 @@ function chercher(){
                     find_length += polylines[i].length;
                     trouves[i] = true;
                     if (!trouves_uniques.includes(name2)){
-                        var name_std = standardize(name2).replace("' ","_").replace(" ","_")
+                        var name_std = standardize(name2).replace("' ","_").replace(" ","_");
+                        console.log(name_std);
                         document.getElementById("list_found").innerHTML+="<li id='list_found_"+name_std+"'>"+name2+"</li>";
                         document.getElementById("list_found_"+name_std).onclick=function(){openTooltip(polylines[i])}
                         trouves_uniques.push(name2);
@@ -286,6 +287,12 @@ function upload_save(saved_trouvees){
         if(saved_trouvees[i]){
             polylines[i].setStyle({"color":"green"});
             polylines[i].bindTooltip(name2);
+            if(polylines[i].wiki){
+                [langue, page]= polylines[i].wiki.split(":");
+                polylines[i].bindPopup(
+                    "<iframe style='height:400px;' src='https://"+langue+".m.wikipedia.org/wiki/"+page+"'></iframe>"
+                )
+            }
             any_ok = true;
             if (!trouves[i]){
                 find_length += polylines[i].length;
