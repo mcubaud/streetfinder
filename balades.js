@@ -153,15 +153,7 @@ function chercher(){
                     find_length += polylines[i].length;
                     trouves[i] = true;
                     if (!trouves_uniques.includes(name2)){
-                        let name_std = standardize(name2).replaceAll("' ","_").replaceAll(" ","_")
-                        document.getElementById("list_found").innerHTML+="<li id='list_found_"+name_std+"'>"+name2+"</li>";
-                        let thispolyline = polylines[i]
-                        document.getElementById("list_found_"+name_std).onclick=function(){
-                            console.log(name_std);
-                            thispolyline.openTooltip();
-                        }
-                        trouves_uniques.push(name2);
-                        console.log(name2);
+                        add_in_list_found(name2, polylines[i]);
                     }
                 }
 				
@@ -302,18 +294,23 @@ function upload_save(saved_trouvees){
                 trouves[i] = true;
             }
             if (!trouves_uniques.includes(name2)){
-                let name_std = standardize(name2).replaceAll("' ","_").replaceAll(" ","_")
-                document.getElementById("list_found").innerHTML+="<li id='list_found_"+name_std+"'>"+name2+"</li>";
-                let thispolyline = polylines[i]
-                document.getElementById("list_found_"+name_std).onclick=function(){
-                    console.log(name_std);
-                    thispolyline.openTooltip();
-                }
-                trouves_uniques.push(name2);
-                console.log(name2);
+                add_in_list_found(name2, polylines[i]);
             }
         }
     }
+}
+
+function add_in_list_found(name, thispolyline){
+    let name_std = standardize(name).replaceAll("' ","_").replaceAll(" ","_")
+    let li = document.createElement("li")
+    li.innerHTML = "<li id='list_found_"+name_std+"'>"+name+"</li>";
+    document.getElementById("list_found").appendChild(li);
+    document.getElementById("list_found_"+name_std).onclick=function(){
+        console.log(name_std);
+        thispolyline.openTooltip();
+    }
+    trouves_uniques.push(name);
+    console.log(name);
 }
 
 document.getElementById("upload").onchange = function(){
