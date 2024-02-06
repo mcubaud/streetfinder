@@ -170,7 +170,7 @@ function chercher(){
 }
 
 function standardize(str){
-	str =  str.toLowerCase().replace("-"," ").replace("œ","oe");
+	str =  str.toLowerCase().replace("-"," ").replace("œ","oe").replace("'","' ");
 	var lettres_accentuees = "àäâéèêëîïôöùüû".split("");
 	var lettres_normales =   "aaaeeeeiioouuu".split("");
 	for(let i=0; i<lettres_normales.length; i++){
@@ -180,15 +180,15 @@ function standardize(str){
 }
 
 function are_similar(nom1, nom2){
-	var exact_match = nom1.toLowerCase().replace("-"," ")==nom2.toLowerCase().replace("-"," ");
-	var regex_rues = /rue |avenue |boulevard |cours |place |impasse |allée |ruelle |passage |pont |montée |quai |tunnel |grande rue |montee |allee /g;
+	var exact_match = standardize(nom1)==standardize(nom2);
+	var regex_rues = /rue |avenue |boulevard |cours |place |impasse |allée |ruelle |passage |pont |montée |quai |tunnel |grande rue |montee |allee |bretelle |mail |cite |anse |carrefour |chaussee |chemin |clos |cote |cour |cours |degre |descente |dreve |escoussiere |esplanade |gaffe |grand route |liaison |placette |promenade |residence |rang |rampe |rond point |route |ruelle |sente |sentier |square |traverse |venelle |voie |berge |digue /g;
 	var regex_stop_words = /le |la |l' |les |de |du |des |d' |un |une |l |d /g;
 	const commonFirstNames = ['John', 'Michael', 'Alice'];
 
 	// Construct the regex pattern to match first names followed by last names
 	const regexPattern = new RegExp(`\\b(${commonFirstNames.join('|')})\\s+([A-Z][a-z]+)\\s+`, 'ig');
 
-	var partial_match = standardize(nom1).replace(regex_stop_words,"")==standardize(nom2).replace(regex_stop_words,"").replace(regex_rues,"");
+	var partial_match = standardize(nom1).replace(regex_stop_words,"")==standardize(nom2).replace(regex_rues,"").replace(regex_stop_words,"");
 	return exact_match | partial_match;
 	}
 
