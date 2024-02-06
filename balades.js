@@ -64,17 +64,19 @@ promise
             <p>${obj.properties.Date}</p>
             <p>${obj.properties.Longueur}</p>
             `)*/
-		polyline.nom = obj.properties.name;
-        other_tags = obj.properties.other_tags;
-        if (other_tags.includes("wikipedia")){
-            polyline.wiki = other_tags.split("wikipedia\"=>\"")[1].split("\"")[0];
-            console.log(polyline.wiki);
-        }
-		polyline.length = obj.properties.length;
-		total_length += polyline.length;
-		polylines[i] = polyline
-		names[i] = obj.properties.name;
-		trouves[i] = false;
+            polyline.nom = obj.properties.name;
+            other_tags = obj.properties.other_tags;
+            if (other_tags.includes("\"wikipedia\"=>\"")){
+                try{
+                    polyline.wiki = other_tags.split("\"wikipedia\"=>\"")[1].split("\"")[0];
+                    console.log(polyline.wiki);
+                }finally{}
+            }
+            polyline.length = obj.properties.length;
+            total_length += polyline.length;
+            polylines[i] = polyline
+            names[i] = obj.properties.name;
+            trouves[i] = false;
         }finally{
 			
         }
@@ -289,8 +291,8 @@ function upload_save(saved_trouvees){
                 trouves[i] = true;
             }
             if (!trouves_uniques.includes(name2)){
-                document.getElementById("list_found").innerHTML+="<li>"+name2+"</li>";
-                document.getElementById("list_found").lastChild.onclick=function(){openTooltip(polylines[i])}
+                document.getElementById("list_found").innerHTML+="<li id='list_found_"+name2+"'>"+name2+"</li>";
+                document.getElementById("list_found_"+name2).onclick=function(){openTooltip(polylines[i])}
                 trouves_uniques.push(name2);
             }
         }
