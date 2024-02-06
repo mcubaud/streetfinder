@@ -66,7 +66,7 @@ promise
             `)*/
             polyline.nom = obj.properties.name;
             other_tags = obj.properties.other_tags;
-            if (other_tags.includes("\"wikipedia\"=>\"")){
+            if (other_tags && other_tags.includes("\"wikipedia\"=>\"")){
                 try{
                     polyline.wiki = other_tags.split("\"wikipedia\"=>\"")[1].split("\"")[0];
                     console.log(polyline.wiki);
