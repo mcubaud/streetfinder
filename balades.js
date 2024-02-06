@@ -153,7 +153,7 @@ function chercher(){
                     find_length += polylines[i].length;
                     trouves[i] = true;
                     if (!trouves_uniques.includes(name2)){
-                        var name_std = standardize(name2).replace("' ","_").replace(" ","_");
+                        var name_std = standardize(name2).replaceAll("' ","_").replaceAll(" ","_");
                         console.log(name_std);
                         document.getElementById("list_found").innerHTML+="<li id='list_found_"+name_std+"'>"+name2+"</li>";
                         document.getElementById("list_found_"+name_std).onclick=function(){openTooltip(polylines[i])}
@@ -185,11 +185,11 @@ function chercher(){
 }
 
 function standardize(str){
-	str =  str.toLowerCase().replace("-"," ").replace("œ","oe").replace("'","' ");
+	str =  str.toLowerCase().replaceAll("-"," ").replaceAll("œ","oe").replaceAll("'","' ");
 	var lettres_accentuees = "àäâéèêëîïôöùüû".split("");
 	var lettres_normales =   "aaaeeeeiioouuu".split("");
 	for(let i=0; i<lettres_normales.length; i++){
-		str = str.replace(lettres_accentuees[i], lettres_normales[i]);
+		str = str.replaceAll(lettres_accentuees[i], lettres_normales[i]);
 	}
 	return str
 }
@@ -203,7 +203,7 @@ function are_similar(nom1, nom2){
 	// Construct the regex pattern to match first names followed by last names
 	const regexPattern = new RegExp(`\\b(${commonFirstNames.join('|')})\\s+([A-Z][a-z]+)\\s+`, 'ig');
 
-	var partial_match = standardize(nom1).replace(regex_stop_words,"")==standardize(nom2).replace(regex_rues,"").replace(regex_stop_words,"");
+	var partial_match = standardize(nom1).replaceAll(regex_stop_words,"")==standardize(nom2).replaceAll(regex_rues,"").replaceAll(regex_stop_words,"");
 	return exact_match | partial_match;
 	}
 
@@ -299,7 +299,7 @@ function upload_save(saved_trouvees){
                 trouves[i] = true;
             }
             if (!trouves_uniques.includes(name2)){
-                var name_std = standardize(name2).replace("' ","_").replace(" ","_")
+                var name_std = standardize(name2).replaceAll("' ","_").replaceAll(" ","_")
                 document.getElementById("list_found").innerHTML+="<li id='list_found_"+name_std+"'>"+name2+"</li>";
                 document.getElementById("list_found_"+name_std).onclick=function(){openTooltip(polylines[i])}
                 trouves_uniques.push(name2);
