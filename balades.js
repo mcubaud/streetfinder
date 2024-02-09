@@ -309,6 +309,7 @@ function add_in_list_found(name, thispolyline){
         console.log(name_std);
         thispolyline.openTooltip();
     }
+    document.getElementById("list_found_"+name_std).scrollIntoView();
     trouves_uniques.push(name);
     console.log(name);
 }
