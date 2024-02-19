@@ -181,8 +181,8 @@ function chercher(){
 
 function standardize(str){
 	str =  str.toLowerCase().replaceAll("-"," ").replaceAll("œ","oe").replaceAll("'","' ");
-	var lettres_accentuees = "àäâéèêëîïôöùüû".split("");
-	var lettres_normales =   "aaaeeeeiioouuu".split("");
+	var lettres_accentuees = "àäâéèêëîïôöùüûÿ".split("");
+	var lettres_normales =   "aaaeeeeiioouuuy".split("");
 	for(let i=0; i<lettres_normales.length; i++){
 		str = str.replaceAll(lettres_accentuees[i], lettres_normales[i]);
 	}
