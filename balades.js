@@ -298,6 +298,7 @@ function upload_save(saved_trouvees){
             }
         }
     }
+    print_score();
 }
 
 function add_in_list_found(name, thispolyline){
@@ -308,6 +309,7 @@ function add_in_list_found(name, thispolyline){
     document.getElementById("list_found_"+name_std).onclick=function(){
         console.log(name_std);
         thispolyline.openTooltip();
+        mymap.panTo(thispolyline._latlngs[0], thispolyline._latlngs[1])
     }
     document.getElementById("list_found_"+name_std).scrollIntoView();
     trouves_uniques.push(name);
