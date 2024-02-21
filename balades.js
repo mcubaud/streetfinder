@@ -237,9 +237,30 @@ function hexToRgb(hex){
     var b=parseInt(hex.slice(5,7),16);
     return [r,g,b]
 }
+/*Ancienne version du dégradé
 function couleur_par_score(pts){
-    return rgbToHex(Math.floor(255-255*pts),Math.floor(255*pts),0);
+    return rgbToHex(
+        Math.floor(255-255*pts),
+        Math.floor(255*pts),
+        0);
 }
+*/
+
+//Dégradé à saturation et valeur constante: Rouge -> Jaune -> Vert
+function couleur_par_score(pts){
+    if(pts<0.5){
+      return rgbToHex(
+          Math.floor(255),
+          Math.floor(255*2*pts),
+          0);
+    }else{
+      return rgbToHex(
+          Math.floor(255-255*pts/2),
+          Math.floor(255),
+          0);
+    }
+      
+  }
 
 /*document.getElementById("localize").onclick=function(){
     mymap.locate({setView: true, maxZoom: 16});
