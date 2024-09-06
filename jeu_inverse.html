@@ -63,6 +63,10 @@
                 <h3 style="color:white;">Rues trouvées</h3>
                 <ul id="list_found"></ul>
             </div>
+            <div id="div_not_found">
+                <h3 style="color:white;">Rues pas trouvées</h3>
+                <ul id="list_not_found"></ul>
+            </div>
             <button id="save">Sauvegarder ma progression</button>
             <label for="upload">Charger une sauvegarde:</label>
             <input type="file" name="upload" id="upload" accept=".json"/>
@@ -118,6 +122,7 @@
         var promise = promise0;
         var total_length = 0;
         var find_length = 0;
+        var not_find_length = 0;
         var polylines = {};
         var names = {};
         var trouves = {};
@@ -159,8 +164,9 @@
         });
 
         function print_score(){
-            document.getElementById("score").innerHTML = Math.round(find_length/1000) + " / " + Math.round(total_length/1000) + " km (" + Math.round(100*find_length/total_length) + "%) des rues trouvées";
-            document.getElementById("score").style["color"] = couleur_par_score(find_length/total_length);
+            var asked_length = find_length + not_find_length;
+            document.getElementById("score").innerHTML = Math.round(find_length/1000) + " / " + Math.round(asked_length/1000) + " km (" + Math.round(100*find_length/asked_length) + "%) des rues trouvées";
+            document.getElementById("score").style["color"] = couleur_par_score(find_length/asked_length);
         }
 
 
@@ -291,6 +297,9 @@
                     askNextStreet();
                 }else{
                     document.getElementById("bad_bip").play();
+                    if(attemptsLeft==1){
+                        document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentative restante";
+                    }
                 }
             }
         }
@@ -308,9 +317,20 @@
                                 "<iframe style='height:400px;' src='https://" + langue + ".m.wikipedia.org/wiki/" + page + "'></iframe>"
                             );
                         }
-                        find_length += polylines[i].length;
+                        if(color=="green"){
+                            find_length += polylines[i].length;
+                        }else{
+                            not_find_length += polylines[i].length;
+
+                        }
                         if (!trouves_uniques.includes(name2)){
-                            add_in_list_found(name2, polylines[i]);
+                            if(color=="green"){
+                                add_in_list_found(name2, polylines[i]);
+                            }else{
+                                add_in_list_not_found(name2, polylines[i]);
+
+                            }
+                            
                         }
                     }
                 }
@@ -399,6 +419,18 @@
                 mymap.panTo(thispolyline._latlngs[0], thispolyline._latlngs[1]);
             }
             document.getElementById("list_found_" + name_std).scrollIntoView();
+            trouves_uniques.push(name);
+        }
+        function add_in_list_not_found(name, thispolyline){
+            var name_std = standardize(name).replace(/' /g, "_").replace(/ /g, "_");
+            var li = document.createElement("li");
+            li.innerHTML = "<li id='list_not_found_" + name_std + "'>" + name + "</li>";
+            document.getElementById("list_not_found").appendChild(li);
+            document.getElementById("list_not_found_" + name_std).onclick = function(){
+                thispolyline.openTooltip();
+                mymap.panTo(thispolyline._latlngs[0], thispolyline._latlngs[1]);
+            }
+            document.getElementById("list_not_found_" + name_std).scrollIntoView();
             trouves_uniques.push(name);
         }
 
