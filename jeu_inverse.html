@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Street Finder Reverse Game</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="balades.css"/>
     <style>
         #mapid { height: 600px; }
         .clignoter_vert {
@@ -21,10 +22,10 @@
             100% { background-color: white; }
         }
         @keyframes secouer_petit_orange {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-            100% { transform: translateX(0); }
+            0% { transform: translateX(0); color: orange;}
+            25% { transform: translateX(-5px); color: black;}
+            75% { transform: translateX(5px); color: orange;}
+            100% { transform: translateX(0); color: black;}
         }
         @keyframes secouer_petit {
             0% { transform: translateX(0); }
