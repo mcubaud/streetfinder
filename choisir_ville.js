@@ -20,14 +20,19 @@ var Lyon = "Lyon";
 var Rennes = "Rennes"
 
 L.marker([45.75728373443727, 4.849433898925782], {icon: LyonIcon}).addTo(mymap)
-    .bindPopup('<button onclick="choisir(Lyon)">Choisir Lyon</button>')
+    .bindPopup('<button onclick="choisir(Lyon)">Choisir Lyon</button><button onclick="choisir_inverse(Lyon)">Choisir Lyon (inverse)</button>')
 
 
 L.marker([48.11105621460431, -1.676739113603782], {icon: RennesIcon}).addTo(mymap)
-    .bindPopup('<button onclick="choisir(Rennes)">Choisir Rennes</button>')
+    .bindPopup('<button onclick="choisir(Rennes)">Choisir Rennes</button><button onclick="choisir_inverse(Rennes)">Choisir Rennes (inverse)</button>')
 
 
 function choisir(lieu){
     localStorage.setItem("lieu", lieu);
     document.location.href = "./retrouver_les_rues.html";
+}
+
+function choisir_inverse(lieu){
+    localStorage.setItem("lieu", lieu);
+    document.location.href = "./jeu_inverse.html";
 }
