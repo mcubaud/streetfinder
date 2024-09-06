@@ -51,7 +51,7 @@
             margin: 0px 15px 15px 15px;
         }
         #list_found{
-            height:90%;
+            height:80%;
             margin:0px;
             overflow: auto;
         }
@@ -69,7 +69,7 @@
             margin: 0px 15px 15px 15px;
         }
         #list_not_found{
-            height:90%;
+            height:80%;
             margin:0px;
             overflow: auto;
         }
@@ -166,11 +166,13 @@
         var trouves_uniques = [];
         var currentStreetIndex = 0;
         var attemptsLeft = 3;
+        var mode = "par_distance_au_centre"
 
         promise
         .then(r => {
             var array = r.features;
-            array.sort((a, b) => b.properties.length - a.properties.length);
+            array = sort_street(array, mode);
+            
             for(var i = 0; i < array.length; i++){
                 var obj = array[i];
                 var lnglats = obj.geometry.coordinates;
@@ -200,10 +202,41 @@
             askNextStreet();
         });
 
+
+        sort_street(array, mode){
+            if(mode=="par_distance_au_centre"){
+                sum_x = 0
+                sum_y = 0
+                for(var i = 0; i < array.length; i++){
+                    sum_x+=array[i].geometry.coordinates[0][0]
+                sum_y+=array[i].geometry.coordinates[0][1]
+                }
+                for(var i = 0; i < array.length; i++){
+                    array[i].distance=Math.sqrt((array[i].geometry.coordinates[0][0]-sum_x/array.length)**2 + (array[i].geometry.coordinates[0][1]-sum_y/array.length)**2 )
+                }
+                array.sort((a, b) => a.distance - b.distance);
+                return array
+            }
+            if(mode=="par_taille_des_segments"){
+                array.sort((a, b) => b.properties.length - a.properties.length);
+                return array
+            }
+            if(mode=="random"){
+                array.sort((a, b) => Math.random() - Math.random());
+                return array
+            }
+        }
+
         function print_score(){
             var asked_length = find_length + not_find_length;
-            document.getElementById("score").innerHTML = Math.round(find_length/1000) + " / " + Math.round(asked_length/1000) + " km (" + Math.round(100*find_length/asked_length) + "%) des rues trouvées";
-            document.getElementById("score").style["color"] = couleur_par_score(find_length/asked_length);
+            if(asked_length==0){
+                document.getElementById("score").innerHTML = Math.round(find_length/1000) + " / " + Math.round(asked_length/1000) + " km (" + 0 + "%) des rues trouvées";
+                document.getElementById("score").style["color"] = couleur_par_score(0);
+            }else{
+                document.getElementById("score").innerHTML = Math.round(find_length/1000) + " / " + Math.round(asked_length/1000) + " km (" + Math.round(100*find_length/asked_length) + "%) des rues trouvées";
+                document.getElementById("score").style["color"] = couleur_par_score(find_length/asked_length);
+            }
+            
         }
 
 
