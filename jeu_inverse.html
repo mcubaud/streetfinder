@@ -241,8 +241,10 @@
                 askNextStreet();
             }else{
                 attemptsLeft -=1;
-                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes"
-                if(attemptsLeft<0){
+                document.getElementById("remaining_attempts").classList.add("secouer_petit");
+                setTimeout(() => { document.getElementById("remaining_attempts").classList.remove("secouer_petit"); }, 1000);
+                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes";
+                if(attemptsLeft<=0){
                     color_roads(targetstreetName, "red");
                     askNextStreet();
                 }
