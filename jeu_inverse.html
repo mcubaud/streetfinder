@@ -36,15 +36,39 @@
     </style>
 </head>
 <body>
-    <div id="titre"><h1>Street Finder Game in </h1></div>
-    <div id="mapid"></div>
+    <header>
+        <div id="haut_gauche">
+          <!--<button id="localize"></button>-->
+        </div>
+        <div id='titre'>
+        <h1>Retrouver les rues de </h1>
+        <h1 style="color: black;"> &#128269;</h1>
+        </div>
+        <div id="boutons">
+        <progress id="file" max="100" value="0">0%</progress>
+          <p id="score">0 % des rues trouvées</p>
+        </div>
+    </header>
+    <div id="ecran_du_jeu">
+        <div id="mapid"></div>
+        <div id="container_of_list_of_street"></div>
+            <div id="div_found">
+                <h3 style="color:white;">Rues trouvées</h3>
+                <ul id="list_found"></ul>
+            </div>
+        <button id="save">Sauvegarder ma progression</button>
+        <label for="upload">Charger une sauvegarde:</label>
+        <input type="file" name="upload" id="upload" accept=".json"/>
+        </div>
+    </div>
+    <div id="recherche">
+        <p id="score"></p>
+        <p id="target_street"></p>
+        <p id="remaining_attempts">3 remaining attempts</p>
+        <button id="passer">Passer</button>
+    </div>
 
-    <p id="score"></p>
-    <p id="target_street"></p>
-    <p id="remaining_attempts">3 remaining attempts</p>
-    <ul id="list_found"></ul>
-    <input type="file" id="upload">
-    <button id="save">Save Progress</button>
+    <audio id="bad_bip" src="https://universal-soundbank.com/sounds/2042.mp3"></audio>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
@@ -130,6 +154,8 @@
             document.getElementById("score").innerHTML = Math.round(find_length/1000) + " / " + Math.round(total_length/1000) + " km (" + Math.round(100*find_length/total_length) + "%) des rues trouvées";
             document.getElementById("score").style["color"] = couleur_par_score(find_length/total_length);
         }
+
+
 
 
 
@@ -232,6 +258,11 @@
             }
         }
 
+        document.getElementById("passer").onclick=function(){
+            color_roads(targetstreetName, "red");
+            askNextStreet()
+        }
+
         function check_clicked_street(e){
             console.log(e.target);
             polyline = e.target
@@ -242,8 +273,9 @@
                 askNextStreet();
             }else{
                 attemptsLeft -=1;
-                document.getElementById("remaining_attempts").classList.add("secouer_petit");
-                setTimeout(() => { document.getElementById("remaining_attempts").classList.remove("secouer_petit"); }, 1000);
+                document.getElementById("remaining_attempts").classList.add("secouer_petit_orange");
+                setTimeout(() => { document.getElementById("remaining_attempts").classList.remove("secouer_petit_orange"); }, 1000);
+                document.getElementById("bad_bip").play();
                 document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes";
                 if(attemptsLeft<=0){
                     color_roads(targetstreetName, "red");
