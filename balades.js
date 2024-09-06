@@ -191,9 +191,9 @@ function standardize(str){
 
 function are_similar(nom1, nom2){
 	var exact_match = standardize(nom1)==standardize(nom2);
-	var regex_rues = /rue |avenue |boulevard |cours |place |impasse |allée |ruelle |passage |pont |montée |quai |tunnel |grande rue |montee |allee |bretelle |mail |cite |anse |carrefour |chaussee |chemin |clos |cote |cour |cours |degre |descente |dreve |escoussiere |esplanade |gaffe |grand route |liaison |placette |promenade |residence |rang |rampe |rond point |route |ruelle |sente |sentier |square |traverse |venelle |voie |berge |digue /g;
-	var regex_stop_words = /le |la |l' |les |de |du |des |d' |un |une |l |d /g;
-    var regex_military = /amiral |caporal |lieutenant |capitaine |major |général |general |colonel |maréchal |marechal |lieutenant-colonel |sergent |sergent-chef |adjudant |sous-lieutenant |commandant |président | president/g;
+	var regex_rues = /\brue |\bavenue |\bboulevard |\bcours |\bplace |\bimpasse |\ballée |\bruelle |\bpassage |\bpont |\bmontée |\bquai |\btunnel |\bgrande rue |\bmontee |\ballee |\bbretelle |\bmail |\bcite |\banse |\bcarrefour |\bchaussee |\bchemin |\bclos |\bcote |\bcour |\bcours |\bdegre |\bdescente |\bdreve |\bescoussiere |\besplanade |\bgaffe |\bgrand route |\bliaison |\bplacette |\bpromenade |\bresidence |\brang |\brampe |\brond point |\broute |\bruelle |\bsente |\bsentier |\bsquare |\btraverse |\bvenelle |\bvoie |\bberge |\bdigue /g;
+	var regex_stop_words = /\ble |\bla |\bl' |\bles |\bde |\bdu |\bdes |\bd' |\bun |\bune |\bl |\bd /g;
+    var regex_military = /\bamiral |\bcaporal |\blieutenant |\bcapitaine |\bmajor |\bgénéral |\bgeneral |\bcolonel |\bmarechal |\blieutenant colonel |\bsergent |\bsergent chef |\badjudant |\bsous lieutenant |\bcommandant |\bpresident /g;
 	const commonFirstNames = ['John', 'Michael', 'Alice'];
 
 	// Construct the regex pattern to match first names followed by last names
