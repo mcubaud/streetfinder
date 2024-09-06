@@ -221,7 +221,7 @@
             }
             if(mode=="par_distance_au_centre_predefini"){
                 for(var i = 0; i < array.length; i++){
-                    array[i].distance=Math.sqrt((array[i].geometry.coordinates[0][0]-centre[0])**2 + (array[i].geometry.coordinates[0][1]-centre[1])**2 )
+                    array[i].distance=Math.sqrt((array[i].geometry.coordinates[0][0]-centre[1])**2 + (array[i].geometry.coordinates[0][1]-centre[0])**2 )
                 }
                 array.sort((a, b) => a.distance - b.distance);
                 return array
