@@ -75,6 +75,8 @@
     </div>
 
     <audio id="bad_bip" src="https://universal-soundbank.com/sounds/2042.mp3"></audio>
+    <audio id="very_bad_bip" src="https://universal-soundbank.com/sounds/1315.mp3"></audio>
+    <audio id="good_bip" src="https://universal-soundbank.com/sounds/7410.mp3"></audio>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
@@ -276,16 +278,20 @@
             if( are_similar(targetstreetName, name2) ){
                 trouves[polylines.i]=true;
                 color_roads(targetstreetName, "green");
+                document.getElementById("good_bip").play();
                 askNextStreet();
             }else{
                 attemptsLeft -=1;
                 document.getElementById("remaining_attempts").classList.add("secouer_petit_orange");
                 setTimeout(() => { document.getElementById("remaining_attempts").classList.remove("secouer_petit_orange"); }, 1000);
-                document.getElementById("bad_bip").play();
+                
                 document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes";
                 if(attemptsLeft<=0){
                     color_roads(targetstreetName, "red");
+                    document.getElementById("very_bad_bip").play();
                     askNextStreet();
+                }else{
+                    document.getElementById("bad_bip").play();
                 }
             }
         }
