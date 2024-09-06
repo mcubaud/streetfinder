@@ -216,6 +216,7 @@
             if (currentStreetIndex < Object.keys(names).length) {
                 targetstreetName = names[currentStreetIndex];
                 if(trouves_uniques.includes(targetstreetName)){
+                    currentStreetIndex++;
                     askNextStreet();
                 }
                 print_score()
