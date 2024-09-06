@@ -213,9 +213,12 @@
 
 
         function askNextStreet(){
-            print_score()
             if (currentStreetIndex < Object.keys(names).length) {
                 targetstreetName = names[currentStreetIndex];
+                if(trouves_uniques.includes(targetstreetName)){
+                    askNextStreet();
+                }
+                print_score()
                 document.getElementById("target_street").innerHTML = "<b>Rue à trouver </b>: "+targetstreetName
                 alert("Rue à trouver : " + targetstreetName);
                 attemptsLeft = 3;
@@ -223,13 +226,14 @@
                 currentStreetIndex++;
             } else {
                 alert("Bravo ! Vous avez trouvé toutes les rues !");
+                print_score()
             }
         }
 
         function check_clicked_street(e){
             console.log(e.target);
             polyline = e.target
-            name2 = polyline.name
+            name2 = polyline.nom
             if( are_similar(targetstreetName, name2) ){
                 trouves[polylines.i]=true;
                 color_roads(targetstreetName, "green");
