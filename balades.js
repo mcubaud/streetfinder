@@ -193,12 +193,13 @@ function are_similar(nom1, nom2){
 	var exact_match = standardize(nom1)==standardize(nom2);
 	var regex_rues = /rue |avenue |boulevard |cours |place |impasse |allée |ruelle |passage |pont |montée |quai |tunnel |grande rue |montee |allee |bretelle |mail |cite |anse |carrefour |chaussee |chemin |clos |cote |cour |cours |degre |descente |dreve |escoussiere |esplanade |gaffe |grand route |liaison |placette |promenade |residence |rang |rampe |rond point |route |ruelle |sente |sentier |square |traverse |venelle |voie |berge |digue /g;
 	var regex_stop_words = /le |la |l' |les |de |du |des |d' |un |une |l |d /g;
+    var regex_military = /amiral |caporal |lieutenant |capitaine |major |général |colonel |maréchal |lieutenant-colonel |sergent |sergent-chef |adjudant |sous-lieutenant |commandant /g;
 	const commonFirstNames = ['John', 'Michael', 'Alice'];
 
 	// Construct the regex pattern to match first names followed by last names
 	const regexPattern = new RegExp(`\\b(${commonFirstNames.join('|')})\\s+([A-Z][a-z]+)\\s+`, 'ig');
 
-	var partial_match = standardize(nom1).replaceAll(regex_stop_words,"")==standardize(nom2).replaceAll(regex_rues,"").replaceAll(regex_stop_words,"");
+	var partial_match = standardize(nom1).replaceAll(regex_stop_words,"")==standardize(nom2).replaceAll(regex_rues,"").replaceAll(regex_stop_words,"").replaceAll(regex_military, "");
 	return exact_match | partial_match;
 	}
 
