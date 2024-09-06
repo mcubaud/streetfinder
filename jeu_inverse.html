@@ -37,9 +37,10 @@
 <body>
     <div id="titre"><h1>Street Finder Game in </h1></div>
     <div id="mapid"></div>
-    <input type="text" id="inputAdresse" placeholder="Enter street name">
-    <button id="btn-recherche">Search</button>
+
     <p id="score"></p>
+    <p id="target_street"></p>
+    <p id="remaining_attempts">3 remaining attempts</p>
     <ul id="list_found"></ul>
     <input type="file" id="upload">
     <button id="save">Save Progress</button>
@@ -103,6 +104,7 @@
                 try{
                     var polyline = L.polyline(latlngs, {color: '#3b364b'}).addTo(mymap);
                     polyline.nom = obj.properties.name;
+                    polyline.i = i;
                     var other_tags = obj.properties.other_tags;
                     if (other_tags && other_tags.includes("\"wikipedia\"=>\"")){
                         try{
@@ -112,6 +114,7 @@
                     }
                     polyline.length = obj.properties.length;
                     total_length += polyline.length;
+                    polyline.onclick=check_clicked_street;
                     polylines[i] = polyline;
                     names[i] = obj.properties.name;
                     trouves[i] = false;
@@ -126,18 +129,7 @@
             document.getElementById("score").style["color"] = couleur_par_score(find_length/total_length);
         }
 
-        var inputVille = document.getElementById('inputAdresse');
-        inputVille.addEventListener('focusout', function(event) {
-            chercher();  
-        });
 
-        inputVille.addEventListener('keydown', (e) => {
-            if (e.keyCode == 13){
-                chercher();
-            }
-        });
-
-        document.getElementById("btn-recherche").onclick = chercher;
 
         function chercher(){
             var adresse = $("#inputAdresse").val();
@@ -208,23 +200,66 @@
             return str;
         }
 
+
         function are_similar(nom1, nom2){
-            var exact_match = standardize(nom1) === standardize(nom2);
-            var regex_rues = /rue |avenue |boulevard |cours |place |impasse |allée |ruelle |passage |pont |montée |quai |tunnel |grande rue |montee |allee |bretelle |mail |cite |anse |carrefour |chaussee |chemin |clos |cote |cour |cours |degre |descente |dreve |escoussiere |esplanade |gaffe |grand route |liaison |placette |promenade |residence |rang |rampe |rond point |route |ruelle |sente |sentier |square |traverse |venelle |voie |berge |digue /g;
-            var regex_stop_words = /le |la |l' |les |de |du |des |d' |un |une |l |d /g;
-            var partial_match = standardize(nom1).replace(regex_stop_words, "") === standardize(nom2).replace(regex_rues, "").replace(regex_stop_words, "");
-            return exact_match || partial_match;
-        }
+            var exact_match = standardize(nom1)==standardize(nom2);
+            var regex_rues = /\brue |\bavenue |\bboulevard |\bcours |\bplace |\bimpasse |\ballée |\bruelle |\bpassage |\bpont |\bmontée |\bquai |\btunnel |\bgrande rue |\bmontee |\ballee |\bbretelle |\bmail |\bcite |\banse |\bcarrefour |\bchaussee |\bchemin |\bclos |\bcote |\bcour |\bcours |\bdegre |\bdescente |\bdreve |\bescoussiere |\besplanade |\bgaffe |\bgrand route |\bliaison |\bplacette |\bpromenade |\bresidence |\brang |\brampe |\brond point |\broute |\bruelle |\bsente |\bsentier |\bsquare |\btraverse |\bvenelle |\bvoie |\bberge |\bdigue /g;
+            var regex_stop_words = /\ble |\bla |\bl' |\bles |\bde |\bdu |\bdes |\bd' |\bun |\bune |\bl |\bd /g;
+            var regex_military = /\bamiral |\bcaporal |\blieutenant |\bcapitaine |\bmajor |\bgénéral |\bgeneral |\bcolonel |\bmarechal |\blieutenant colonel |\bsergent |\bsergent chef |\badjudant |\bsous lieutenant |\bcommandant |\bpresident /g;
+            var partial_match = standardize(nom1).replaceAll(regex_stop_words,"")==standardize(nom2).replaceAll(regex_rues,"").replaceAll(regex_stop_words,"").replaceAll(regex_military, "");
+            return exact_match | partial_match;
+            }
+
 
         function askNextStreet(){
             if (currentStreetIndex < Object.keys(names).length) {
-                var streetName = names[currentStreetIndex];
-                alert("Find the street: " + streetName);
+                targetstreetName = names[currentStreetIndex];
+                document.getElementById("target_street").innerHTML = "<b>Rue à trouver </b>: "+targetstreetName
+                alert("Find the street: " + targetstreetName);
                 attemptsLeft = 3;
                 currentStreetIndex++;
             } else {
                 alert("Congratulations! You've found all the streets!");
             }
+        }
+
+        function check_clicked_street(e){
+            console.log(e.target);
+            polyline = e.target
+            name2 = polyline.name
+            if( are_similar(targetstreetName, name2) ){
+                trouves[polylines.i]=true;
+                color_roads(targetstreetName, "green");
+                askNextStreet();
+            }else{
+                attemptsLeft -=1;
+                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" remaining attempts"
+                if(attemptsLeft<0){
+                    color_roads(targetstreetName, "yellow");
+                    askNextStreet();
+                }
+            }
+        }
+
+        function color_roads(name, color){
+            for(let i in polylines){
+                    var name2 = names[i];
+                    if(are_similar(name, name2)){
+                        trouves[i] = true;
+                        polylines[i].setStyle({"color":color});
+                        polylines[i].bindTooltip(name2);   
+                        if(polylines[i].wiki){
+                            var [langue, page] = polylines[i].wiki.split(":");
+                            polylines[i].bindPopup(
+                                "<iframe style='height:400px;' src='https://" + langue + ".m.wikipedia.org/wiki/" + page + "'></iframe>"
+                            );
+                        }
+                        find_length += polylines[i].length;
+                        if (!trouves_uniques.includes(name2)){
+                            add_in_list_found(name2, polylines[i]);
+                        }
+                    }
+                }
         }
 
         function resetGame() {
