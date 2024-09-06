@@ -6,7 +6,14 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="balades.css"/>
     <style>
-        #mapid { height: 600px; }
+        #recherche_inv{
+            display: flex;
+            justify-content: space-evenly;
+            margin-top: 5px;
+            align-items: center;
+            background-color: #dbdbdb;
+        }
+
         .clignoter_vert {
             animation: clignoter_vert 500ms linear;
         }
@@ -42,7 +49,7 @@
         </div>
         <div id='titre'>
         <h1>Retrouver les rues de </h1>
-        <h1 style="color: black;"> &#128269;</h1>
+        <h1 style="color: black;"> &#128269 (inverse);</h1>
         </div>
         <div id="boutons">
         <progress id="file" max="100" value="0">0%</progress>
@@ -62,7 +69,6 @@
         </div>
     </div>
     <div id="recherche">
-        <p id="score"></p>
         <p id="target_street"></p>
         <p id="remaining_attempts">3 remaining attempts</p>
         <button id="passer">Passer</button>
