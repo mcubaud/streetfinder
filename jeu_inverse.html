@@ -135,9 +135,11 @@
         var mymap;
         if(lieu == "Lyon"){
             mymap = L.map('mapid').setView([45.75728373443727, 4.849433898925782], 13);
+            centre = ([45.76760066596194, 4.833500872177675]);
         }
         if(lieu == "Rennes"){
             mymap = L.map('mapid').setView([48.11105621460431, -1.676739113603782], 13);
+            centre = ([48.11105621460431, -1.676739113603782]);
         }
 
         L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
@@ -166,7 +168,7 @@
         var trouves_uniques = [];
         var currentStreetIndex = 0;
         var attemptsLeft = 3;
-        var mode = "par_distance_au_centre"
+        var mode = "par_distance_au_centre_predefini"
 
         promise
         .then(r => {
@@ -213,6 +215,13 @@
                 }
                 for(var i = 0; i < array.length; i++){
                     array[i].distance=Math.sqrt((array[i].geometry.coordinates[0][0]-sum_x/array.length)**2 + (array[i].geometry.coordinates[0][1]-sum_y/array.length)**2 )
+                }
+                array.sort((a, b) => a.distance - b.distance);
+                return array
+            }
+            if(mode=="par_distance_au_centre_predefini"){
+                for(var i = 0; i < array.length; i++){
+                    array[i].distance=Math.sqrt((array[i].geometry.coordinates[0][0]-centre[0])**2 + (array[i].geometry.coordinates[0][1]-centre[1])**2 )
                 }
                 array.sort((a, b) => a.distance - b.distance);
                 return array
