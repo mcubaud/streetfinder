@@ -114,14 +114,15 @@
                     }
                     polyline.length = obj.properties.length;
                     total_length += polyline.length;
-                    polyline.onclick=check_clicked_street;
+                    polyline._path.nom = polyline.nom;
+                    polyline._path.i = i;
+                    polyline._path.onclick=check_clicked_street;
                     polylines[i] = polyline;
                     names[i] = obj.properties.name;
                     trouves[i] = false;
                 }finally{}
             }
             askNextStreet();
-            print_score();
         });
 
         function print_score(){
@@ -212,14 +213,16 @@
 
 
         function askNextStreet(){
+            print_score()
             if (currentStreetIndex < Object.keys(names).length) {
                 targetstreetName = names[currentStreetIndex];
                 document.getElementById("target_street").innerHTML = "<b>Rue à trouver </b>: "+targetstreetName
-                alert("Find the street: " + targetstreetName);
+                alert("Rue à trouver : " + targetstreetName);
                 attemptsLeft = 3;
+                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes"
                 currentStreetIndex++;
             } else {
-                alert("Congratulations! You've found all the streets!");
+                alert("Bravo ! Vous avez trouvé toutes les rues !");
             }
         }
 
@@ -233,9 +236,9 @@
                 askNextStreet();
             }else{
                 attemptsLeft -=1;
-                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" remaining attempts"
+                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes"
                 if(attemptsLeft<0){
-                    color_roads(targetstreetName, "yellow");
+                    color_roads(targetstreetName, "red");
                     askNextStreet();
                 }
             }
