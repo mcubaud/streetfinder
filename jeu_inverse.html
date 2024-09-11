@@ -77,12 +77,29 @@
         #list_not_found li{
             cursor: pointer;
         }
+
+        #div_settings{
+            width: 70%;
+            height: 70%;
+            left: 15%;
+            top: 15%;
+            background-image: linear-gradient(white, gray);
+            z-index: 1000000;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid black;
+            border-radius: 30px;
+        }
     </style>
 </head>
 <body>
     <header>
         <div id="haut_gauche">
           <!--<button id="localize"></button>-->
+          <button id="settings" style="background-image: url(https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngitem.com%2Fmiddle%2FJTxJJh_white-gear-png-transparent-png%2F&psig=AOvVaw1gKjAhBMak6ZG_GzLq0so_&ust=1726141582444000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCOCmyM7ouogDFQAAAAAdAAAAABAS);"></button>
         </div>
         <div id='titre'>
         <h1>Retrouver les rues de </h1>
@@ -167,8 +184,16 @@
         var trouves = {};
         var trouves_uniques = [];
         var currentStreetIndex = 0;
-        var attemptsLeft = 3;
-        var mode = "par_distance_au_centre_predefini"
+        var initial_attempts = localStorage.getItem("initial_attempts");
+        if( initial_attempts === null){
+            initial_attempts = 3;
+        }
+        var attemptsLeft = initial_attempts;
+        var mode = localStorage.getItem("mode");
+        if( mode === null){
+            mode = "par_distance_au_centre_predefini";
+        }
+        
 
         promise
         .then(r => {
@@ -341,7 +366,7 @@
                 }
                 print_score()
                 document.getElementById("target_street").innerHTML = "<b>Rue à trouver </b>: "+targetstreetName
-                attemptsLeft = 3;
+                attemptsLeft = initial_attempts;
                 document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes"
                 currentStreetIndex++;
             } else {
@@ -519,6 +544,48 @@
             fetch(urlfile)
             .then(r => r.json())
             .then(r => upload_save(r));
+        }
+
+        document.getElementById("settings").onclick = function(){
+            div_settings = document.createElement("div");
+            div_settings.id = "div_settings";
+            div_settings.innerHTML=`
+            <h2>Paramètres</h2>
+            <div>
+                <label for="choix_lieu">Choix de la ville :</label>
+                <select name="choix_lieu" id="choix_lieu">
+                <option value="Rennes">Rennes</option>
+                <option value="Lyon">Lyon</option>
+                </select>
+            </div>
+            <div>
+                <label for="asked_order">Ordre de demande des rues :</label>
+                <select name="asked_order" id="asked_order">
+                <option value="par_distance_au_centre_predefini">Par distance à un centre prédéfini</option>
+                <option value="par_distance_au_centre">Par distance à un centre calculé</option>
+                <option value=" par_taille_des_segments">Par taille des segments</option>
+                <option value="random">Ordre aléatoire</option>
+                </select>
+            </div>
+            <div>
+                <label for="attempts_number_select">Nombre de tentatives :</label>
+                <input type="number" id="quantity" name="attempts_number_select" min="1" max="5">
+            </div>
+            <div style="display: flex">
+                <button id="valider">Valider et relancer la partie</button>
+                <button id="revenir">Annuler et revenir à la partie</button>
+            </div>
+            `;
+            document.querySelector("body").appendChild(div_settings);
+            document.getElementById("revenir").onclick=function(){
+                document.getElementById("div_settings").remove();
+            }
+            document.getElementById("valider").onclick=function(){
+                localStorage.setItem("lieu", document.getElementById("choix_lieu").value);
+                localStorage.setItem("mode", document.getElementById("asked_order").value);
+                localStorage.setItem("initial_attempts", document.getElementById("attempts_number_select").value);
+                window.location = "";
+            }
         }
     </script>
 </body>
