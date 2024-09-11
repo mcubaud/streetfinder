@@ -221,7 +221,7 @@
                     total_length += polyline.length;
                     polyline._path.nom = polyline.nom;
                     polyline._path.i = i;
-                    polyline._path.onclick=check_clicked_street;
+                    polyline._path.onclick = check_clicked_street;
                     polylines[i] = polyline;
                     names[i] = obj.properties.name;
                     trouves[i] = false;
@@ -258,6 +258,9 @@
             }
             if(mode=="random"){
                 array.sort((a, b) => Math.random() - Math.random());
+                return array
+            }
+            else{
                 return array
             }
         }
@@ -564,7 +567,7 @@
                 <select name="asked_order" id="asked_order">
                 <option value="par_distance_au_centre_predefini">Par distance à un centre prédéfini</option>
                 <option value="par_distance_au_centre">Par distance à un centre calculé</option>
-                <option value=" par_taille_des_segments">Par taille des segments</option>
+                <option value="par_taille_des_segments">Par taille des segments</option>
                 <option value="random">Ordre aléatoire</option>
                 </select>
             </div>
