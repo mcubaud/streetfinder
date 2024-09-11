@@ -51,7 +51,7 @@
             margin: 0px 15px 15px 15px;
         }
         #list_found{
-            height:200px;
+            height: 80%;
             margin:0px;
             overflow: auto;
         }
@@ -60,7 +60,7 @@
             cursor: pointer;
         }
         #div_not_found{
-            height: 80%;
+            height: 200px;
             background-color: black;
             text-shadow: 1px 1px 3px white;
             border: red;
@@ -255,6 +255,21 @@
             if(mode=="par_taille_des_segments"){
                 array.sort((a, b) => b.properties.length - a.properties.length);
                 return array
+            }
+            if(mode=="par_longueur_totale"){
+                for(var i = 0; i < array.length; i++){
+                    var longueur=0
+                    var name = array[i].properties.name
+                    for(var j = 0; j < array.length; j++){
+                        if(name === array[j].properties.name){
+                            longueur+=array[j].properties.length;
+                        }
+                    }
+                    array[i].longueur=longueur;
+                }
+                array.sort((a, b) => b.longueur - a.longueur)
+                return array
+
             }
             if(mode=="random"){
                 array.sort((a, b) => Math.random() - Math.random());
@@ -568,6 +583,7 @@
                 <option value="par_distance_au_centre_predefini">Par distance à un centre prédéfini</option>
                 <option value="par_distance_au_centre">Par distance à un centre calculé</option>
                 <option value="par_taille_des_segments">Par taille des segments</option>
+                <option value="par_longueur_totale">Par longueur totale de la rue (lent)</option>
                 <option value="random">Ordre aléatoire</option>
                 </select>
             </div>
