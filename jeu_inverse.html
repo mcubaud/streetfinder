@@ -629,18 +629,18 @@
                 <div>
                     <label for="choix_lieu">Choix de la ville :</label>
                     <select name="choix_lieu" id="choix_lieu">
-                    <option value="Rennes" selected=${lieu=="Rennes"}>Rennes</option>
-                    <option value="Lyon" selected=${lieu=="Lyon"}>Lyon</option>
+                    <option value="Rennes" ${lieu=="Rennes"? "selected" : ""}>Rennes</option>
+                    <option value="Lyon" selected='${lieu=="Lyon"? "selected" : ""}'>Lyon</option>
                     </select>
                 </div>
                 <div>
                     <label for="asked_order">Ordre de demande des rues :</label>
                     <select name="asked_order" id="asked_order">
-                    <option value="par_distance_au_centre_predefini" selected='${mode=="par_distance_au_centre_predefini"}'>Par distance à un centre prédéfini</option>
-                    <option value="par_distance_au_centre" selected='${mode=="par_distance_au_centre"}'>Par distance à un centre calculé</option>
-                    <option value="par_taille_des_segments" selected='${mode=="par_taille_des_segments"}'>Par taille des segments</option>
-                    <option value="par_longueur_totale" selected='${mode=="par_longueur_totale"}'>Par longueur totale de la rue (lent)</option>
-                    <option value="random">Ordre aléatoire</option>
+                    <option value="par_distance_au_centre_predefini" ${mode=="par_distance_au_centre_predefini"? "selected" : ""}>Par distance à un centre prédéfini</option>
+                    <option value="par_distance_au_centre" ${mode=="par_distance_au_centre"? "selected" : ""}>Par distance à un centre calculé</option>
+                    <option value="par_taille_des_segments" ${mode=="par_taille_des_segments"? "selected" : ""}>Par taille des segments</option>
+                    <option value="par_longueur_totale" ${mode=="par_longueur_totale"? "selected" : ""}>Par longueur totale de la rue (lent)</option>
+                    <option value="random" ${mode=="random"? "selected" : ""}>Ordre aléatoire</option>
                     </select>
                 </div>
                 <div>
@@ -650,9 +650,9 @@
                 <div>
                     <label for="timer_type">Type de chrono :</label>
                     <select name="timer_type" id="timer_type">
-                    <option value="local" selected=${timer_type=="local"}>Temps limité par rue</option>
-                    <option value="global" selected=${timer_type=="global"}>Temps limité pour toutes les rues</option>
-                    <option value="no" selected=${timer_type=="no"}>Pas de temps limité</option>
+                    <option value="local" ${timer_type=="local"? "selected" : ""}>Temps limité par rue</option>
+                    <option value="global" ${timer_type=="global"? "selected" : ""}>Temps limité pour toutes les rues</option>
+                    <option value="no" ${timer_type=="no"? "selected" : ""}>Pas de temps limité</option>
                     </select>
                 </div>
                 <div id="div_duree_chrono" style="visibility:${(timer_type=="no")? 'hidden' : 'visible'};">
