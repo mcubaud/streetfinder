@@ -92,6 +92,7 @@
             justify-content: space-between;
             border: 1px solid black;
             border-radius: 30px;
+            transition: width 2s, height 2s;
         }
 
         #remaining_time{
@@ -620,76 +621,78 @@
         document.getElementById("settings").onclick = function(){
             if(document.getElementById("div_settings")!=null){
                 document.getElementById("div_settings").remove();
-                }
-            div_settings = document.createElement("div");
-            div_settings.id = "div_settings";
-            div_settings.innerHTML=`
-            <h2>Paramètres</h2>
-            <div>
-                <div>
-                    <label for="choix_lieu">Choix de la ville :</label>
-                    <select name="choix_lieu" id="choix_lieu">
-                    <option value="Rennes" ${lieu=="Rennes"? "selected" : ""}>Rennes</option>
-                    <option value="Lyon" selected='${lieu=="Lyon"? "selected" : ""}'>Lyon</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="asked_order">Ordre de demande des rues :</label>
-                    <select name="asked_order" id="asked_order">
-                    <option value="par_distance_au_centre_predefini" ${mode=="par_distance_au_centre_predefini"? "selected" : ""}>Par distance à un centre prédéfini</option>
-                    <option value="par_distance_au_centre" ${mode=="par_distance_au_centre"? "selected" : ""}>Par distance à un centre calculé</option>
-                    <option value="par_taille_des_segments" ${mode=="par_taille_des_segments"? "selected" : ""}>Par taille des segments</option>
-                    <option value="par_longueur_totale" ${mode=="par_longueur_totale"? "selected" : ""}>Par longueur totale de la rue (lent)</option>
-                    <option value="random" ${mode=="random"? "selected" : ""}>Ordre aléatoire</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="attempts_number_select">Nombre de tentatives :</label>
-                    <input type="number" id="attempts_number_select" name="attempts_number_select" min="1" max="5" value=${initial_attempts}>
-                </div>
-                <div>
-                    <label for="timer_type">Type de chrono :</label>
-                    <select name="timer_type" id="timer_type">
-                    <option value="local" ${timer_type=="local"? "selected" : ""}>Temps limité par rue</option>
-                    <option value="global" ${timer_type=="global"? "selected" : ""}>Temps limité pour toutes les rues</option>
-                    <option value="no" ${timer_type=="no"? "selected" : ""}>Pas de temps limité</option>
-                    </select>
-                </div>
-                <div id="div_duree_chrono" style="visibility:${(timer_type=="no")? 'hidden' : 'visible'};">
-                    <label for="duree_chrono">Durée du chrono (s):</label>
-                    <input type="number" id="duree_chrono" name="duree_chrono" min="1" value="30" step="1">
-                </div>
-            </div>
-            <div style="display: flex">
-                <button id="valider">Valider et relancer la partie</button>
-                <button id="revenir">Annuler et revenir à la partie</button>
-            </div>
-            `;
-            document.querySelector("body").appendChild(div_settings);
-            document.getElementById("timer_type").onchange=function(){
-                if(document.getElementById("timer_type").value=="no"){
-                    document.getElementById("div_duree_chrono").style.visibility="hidden";
-                }
-                if(document.getElementById("timer_type").value=="local"){
-                    document.getElementById("div_duree_chrono").style.visibility="visible";
-                    document.getElementById("duree_chrono").outerHTML=`<input type="number" id="duree_chrono" name="duree_chrono" min="1" value="30" step="1">`;
-                }
-                if(document.getElementById("timer_type").value=="global"){
-                    document.getElementById("div_duree_chrono").style.visibility="visible";
-                    document.getElementById("duree_chrono").outerHTML=`<input type="number" id="duree_chrono" name="duree_chrono" min="1" value="3600" step="60">`;
-                }
-            }
+            }else{
 
-            document.getElementById("revenir").onclick=function(){
-                document.getElementById("div_settings").remove();
-            }
-            document.getElementById("valider").onclick=function(){
-                localStorage.setItem("lieu", document.getElementById("choix_lieu").value);
-                localStorage.setItem("mode", document.getElementById("asked_order").value);
-                localStorage.setItem("initial_attempts", document.getElementById("attempts_number_select").value);
-                localStorage.setItem("timer_type", document.getElementById("timer_type").value);
-                localStorage.setItem("duree_chrono", document.getElementById("duree_chrono").value);
-                window.location = "";
+                div_settings = document.createElement("div");
+                div_settings.id = "div_settings";
+                div_settings.innerHTML=`
+                <h2>Paramètres</h2>
+                <div>
+                    <div>
+                        <label for="choix_lieu">Choix de la ville :</label>
+                        <select name="choix_lieu" id="choix_lieu">
+                        <option value="Rennes" ${lieu=="Rennes"? "selected" : ""}>Rennes</option>
+                        <option value="Lyon" selected='${lieu=="Lyon"? "selected" : ""}'>Lyon</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="asked_order">Ordre de demande des rues :</label>
+                        <select name="asked_order" id="asked_order">
+                        <option value="par_distance_au_centre_predefini" ${mode=="par_distance_au_centre_predefini"? "selected" : ""}>Par distance à un centre prédéfini</option>
+                        <option value="par_distance_au_centre" ${mode=="par_distance_au_centre"? "selected" : ""}>Par distance à un centre calculé</option>
+                        <option value="par_taille_des_segments" ${mode=="par_taille_des_segments"? "selected" : ""}>Par taille des segments</option>
+                        <option value="par_longueur_totale" ${mode=="par_longueur_totale"? "selected" : ""}>Par longueur totale de la rue (lent)</option>
+                        <option value="random" ${mode=="random"? "selected" : ""}>Ordre aléatoire</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="attempts_number_select">Nombre de tentatives :</label>
+                        <input type="number" id="attempts_number_select" name="attempts_number_select" min="1" max="5" value=${initial_attempts}>
+                    </div>
+                    <div>
+                        <label for="timer_type">Type de chrono :</label>
+                        <select name="timer_type" id="timer_type">
+                        <option value="local" ${timer_type=="local"? "selected" : ""}>Temps limité par rue</option>
+                        <option value="global" ${timer_type=="global"? "selected" : ""}>Temps limité pour toutes les rues</option>
+                        <option value="no" ${timer_type=="no"? "selected" : ""}>Pas de temps limité</option>
+                        </select>
+                    </div>
+                    <div id="div_duree_chrono" style="visibility:${(timer_type=="no")? 'hidden' : 'visible'};">
+                        <label for="duree_chrono">Durée du chrono (s):</label>
+                        <input type="number" id="duree_chrono" name="duree_chrono" min="1" value="30" step="1">
+                    </div>
+                </div>
+                <div style="display: flex">
+                    <button id="valider">Valider et relancer la partie</button>
+                    <button id="revenir">Annuler et revenir à la partie</button>
+                </div>
+                `;
+                document.querySelector("body").appendChild(div_settings);
+                document.getElementById("timer_type").onchange=function(){
+                    if(document.getElementById("timer_type").value=="no"){
+                        document.getElementById("div_duree_chrono").style.visibility="hidden";
+                    }
+                    if(document.getElementById("timer_type").value=="local"){
+                        document.getElementById("div_duree_chrono").style.visibility="visible";
+                        document.getElementById("duree_chrono").outerHTML=`<input type="number" id="duree_chrono" name="duree_chrono" min="1" value="30" step="1">`;
+                    }
+                    if(document.getElementById("timer_type").value=="global"){
+                        document.getElementById("div_duree_chrono").style.visibility="visible";
+                        document.getElementById("duree_chrono").outerHTML=`<input type="number" id="duree_chrono" name="duree_chrono" min="1" value="3600" step="60">`;
+                    }
+                }
+
+                document.getElementById("revenir").onclick=function(){
+                    document.getElementById("div_settings").remove();
+                }
+                document.getElementById("valider").onclick=function(){
+                    localStorage.setItem("lieu", document.getElementById("choix_lieu").value);
+                    localStorage.setItem("mode", document.getElementById("asked_order").value);
+                    localStorage.setItem("initial_attempts", document.getElementById("attempts_number_select").value);
+                    localStorage.setItem("timer_type", document.getElementById("timer_type").value);
+                    localStorage.setItem("duree_chrono", document.getElementById("duree_chrono").value);
+                    window.location = "";
+                }
             }
         }
     </script>
