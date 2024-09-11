@@ -60,7 +60,7 @@
             cursor: pointer;
         }
         #div_not_found{
-            height: 200px;
+            height: 80%;
             background-color: black;
             text-shadow: 1px 1px 3px white;
             border: red;
@@ -99,11 +99,12 @@
     <header>
         <div id="haut_gauche">
           <!--<button id="localize"></button>-->
-          <button id="settings" style="background-image: url(https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngitem.com%2Fmiddle%2FJTxJJh_white-gear-png-transparent-png%2F&psig=AOvVaw1gKjAhBMak6ZG_GzLq0so_&ust=1726141582444000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCOCmyM7ouogDFQAAAAAdAAAAABAS);"></button>
+          <button id="settings" style="width:30px; height: 30px; background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/fe/Gear-icon-white-background.png'); background-size: 30px;"></button>
         </div>
         <div id='titre'>
         <h1>Retrouver les rues de </h1>
-        <h1 style="color: black;"> &#128269 (inverse);</h1>
+        <h1 style="color: black;"> &#128269</h1>
+        <h1> (inverse)</h1>
         </div>
         <div id="boutons">
         <progress id="file" max="100" value="0">0%</progress>
@@ -569,7 +570,7 @@
             </div>
             <div>
                 <label for="attempts_number_select">Nombre de tentatives :</label>
-                <input type="number" id="quantity" name="attempts_number_select" min="1" max="5">
+                <input type="number" id="attempts_number_select" name="attempts_number_select" min="1" max="5" value="3">
             </div>
             <div style="display: flex">
                 <button id="valider">Valider et relancer la partie</button>
