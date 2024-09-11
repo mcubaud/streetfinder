@@ -130,6 +130,7 @@
     <div id="recherche_inv">
         <p id="target_street"></p>
         <p id="remaining_attempts">3 remaining attempts</p>
+        <p id="remaining_time"></p>
         <button id="passer">Passer</button>
     </div>
 
@@ -195,6 +196,19 @@
             mode = "par_distance_au_centre_predefini";
         }
         
+        var timer;
+        var timer_type = localStorage.getItem("timer_type")
+        if(timer_type === null){
+            timer_type = "local";
+        }
+        if(timer_type =="local"){
+            var initial_time = 30;
+        }if(timer_type =="global"){
+            var initial_time = 3600;
+        }else{
+            initial_time = "illimité";
+        }
+        var time = initial_time;
 
         promise
         .then(r => {
@@ -228,6 +242,9 @@
                 }finally{}
             }
             askNextStreet();
+            if(timer_type=="global"){
+                launch_timer();
+            }
         });
 
 
@@ -386,7 +403,10 @@
                 print_score()
                 document.getElementById("target_street").innerHTML = "<b>Rue à trouver </b>: "+targetstreetName
                 attemptsLeft = initial_attempts;
-                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes"
+                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes";
+                if(timer_type == "local"){
+                    launch_timer();
+                }
                 currentStreetIndex++;
             } else {
                 alert("Bravo ! Vous avez trouvé toutes les rues !");
@@ -397,6 +417,28 @@
         document.getElementById("passer").onclick=function(){
             color_roads(targetstreetName, "red");
             askNextStreet()
+        }
+
+        function launch_timer(){
+            clearInterval(timer);
+            time = initial_time;
+            timer = setInterval(function(){
+                time--
+                document.getElementById("remaining_time").innerHTML=time+"s"
+                document.getElementById("remaining_time").style.color=couleur_par_score(time/initial_time);
+                if(time<=0){
+                    clearInterval(timer);
+                    if(timer_type == "local"){
+                        color_roads(targetstreetName, "red");
+                        document.getElementById("very_bad_bip").play();
+                        askNextStreet();
+                    }
+                    if(timer_type == "global"){
+                        alert("Temps écoulé ! Perdu");
+                        window.location=""
+                    }
+                }
+            }, 1000)
         }
 
         function check_clicked_street(e){
@@ -571,25 +613,35 @@
             div_settings.innerHTML=`
             <h2>Paramètres</h2>
             <div>
-                <label for="choix_lieu">Choix de la ville :</label>
-                <select name="choix_lieu" id="choix_lieu">
-                <option value="Rennes">Rennes</option>
-                <option value="Lyon">Lyon</option>
-                </select>
-            </div>
-            <div>
-                <label for="asked_order">Ordre de demande des rues :</label>
-                <select name="asked_order" id="asked_order">
-                <option value="par_distance_au_centre_predefini">Par distance à un centre prédéfini</option>
-                <option value="par_distance_au_centre">Par distance à un centre calculé</option>
-                <option value="par_taille_des_segments">Par taille des segments</option>
-                <option value="par_longueur_totale">Par longueur totale de la rue (lent)</option>
-                <option value="random">Ordre aléatoire</option>
-                </select>
-            </div>
-            <div>
-                <label for="attempts_number_select">Nombre de tentatives :</label>
-                <input type="number" id="attempts_number_select" name="attempts_number_select" min="1" max="5" value="3">
+                <div>
+                    <label for="choix_lieu">Choix de la ville :</label>
+                    <select name="choix_lieu" id="choix_lieu">
+                    <option value="Rennes">Rennes</option>
+                    <option value="Lyon">Lyon</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="asked_order">Ordre de demande des rues :</label>
+                    <select name="asked_order" id="asked_order">
+                    <option value="par_distance_au_centre_predefini">Par distance à un centre prédéfini</option>
+                    <option value="par_distance_au_centre">Par distance à un centre calculé</option>
+                    <option value="par_taille_des_segments">Par taille des segments</option>
+                    <option value="par_longueur_totale">Par longueur totale de la rue (lent)</option>
+                    <option value="random">Ordre aléatoire</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="attempts_number_select">Nombre de tentatives :</label>
+                    <input type="number" id="attempts_number_select" name="attempts_number_select" min="1" max="5" value="3">
+                </div>
+                <div>
+                    <label for="timer_type">Type de timer :</label>
+                    <select name="timer_type" id="timer_type">
+                    <option value="local">Temps limité par rue</option>
+                    <option value="global">Temps limité pour toutes les rues</option>
+                    <option value="no">Pas de temps limité</option>
+                    </select>
+                </div>
             </div>
             <div style="display: flex">
                 <button id="valider">Valider et relancer la partie</button>
@@ -604,6 +656,7 @@
                 localStorage.setItem("lieu", document.getElementById("choix_lieu").value);
                 localStorage.setItem("mode", document.getElementById("asked_order").value);
                 localStorage.setItem("initial_attempts", document.getElementById("attempts_number_select").value);
+                localStorage.setItem("timer_type", document.getElementById("timer_type").value);
                 window.location = "";
             }
         }
