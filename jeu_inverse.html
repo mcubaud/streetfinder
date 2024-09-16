@@ -664,13 +664,14 @@
                         <label for="attempts_number_select">Nombre de tentatives :</label>
                         <input type="number" id="attempts_number_select" name="attempts_number_select" min="1" max="5" value=${initial_attempts}>
                     </div>
-                    <div>
+                    <div style="display: flex;">
                         <label for="roads_width">Largeur des traits des routes :</label>
                         <input type="number" id="roads_width" name="roads_width" min="3" max="7" step=0.1 value=${roads_width}>
+                        <div id="road_exemple" style="background-color: black;height: auto;width: ${roads_width}px;margin-left: 10px;"></div>
                     </div>
                     <div>
                         <label for="roads_multi_colors">Colorier les routes de différentes couleurs :</label>
-                        <input type="check" id="roads_multi_colors" name="roads_multi_colors" value=${roads_multi_colors}>
+                        <input type="checkbox" id="roads_multi_colors" name="roads_multi_colors" ${roads_multi_colors? "checked" : ""}>
                     </div>
                     <div>
                         <label for="timer_type">Type de chrono :</label>
@@ -704,6 +705,9 @@
                         document.getElementById("duree_chrono").outerHTML=`<input type="number" id="duree_chrono" name="duree_chrono" min="1" value="3600" step="60">`;
                     }
                 }
+                document.getElementById("roads_width").onchange = function(){
+                    document.getElementById("road_exemple").style.width = document.getElementById("roads_width").value+"px";
+                    }
 
                 document.getElementById("revenir").onclick=function(){
                     document.getElementById("div_settings").remove();
@@ -715,7 +719,7 @@
                     localStorage.setItem("timer_type", document.getElementById("timer_type").value);
                     localStorage.setItem("duree_chrono", document.getElementById("duree_chrono").value);
                     localStorage.setItem("roads_width", document.getElementById("roads_width").value);
-                    localStorage.setItem("roads_multi_colors", document.getElementById("roads_multi_colors").value);
+                    localStorage.setItem("roads_multi_colors", document.getElementById("roads_multi_colors").checked);
                     window.location = "";
                 }
             }
