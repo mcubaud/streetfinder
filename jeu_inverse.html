@@ -221,6 +221,16 @@
         }
         var time = initial_time;
 
+        var roads_multi_colors = localStorage.getItem("roads_multi_colors")
+        if( roads_multi_colors === null){
+            roads_multi_colors = true;
+        }
+        var roads_width = localStorage.getItem("roads_width")
+        if( roads_width === null){
+            roads_width = 4.1;
+        }
+
+
         promise
         .then(r => {
             var array = r.features;
@@ -232,7 +242,12 @@
                 var latlngs = lnglats.map(x => [x[1], x[0]]);
 
                 try{
-                    var polyline = L.polyline(latlngs, {color: '#3b364b'}).addTo(mymap);
+                    var rd=0;
+                    if(roads_multi_colors){
+                        rd = Math.floor(Math.min(1.5 * obj.properties.name.length, 180));
+                    }
+                  	var color = rgbToHex(59+rd, 54+rd, 75+rd)
+                    var polyline = L.polyline(latlngs, {color: color, weight:roads_width}).addTo(mymap);
                     polyline.nom = obj.properties.name;
                     polyline.i = i;
                     var other_tags = obj.properties.other_tags;
@@ -650,6 +665,14 @@
                         <input type="number" id="attempts_number_select" name="attempts_number_select" min="1" max="5" value=${initial_attempts}>
                     </div>
                     <div>
+                        <label for="roads_width">Largeur des traits des routes :</label>
+                        <input type="number" id="roads_width" name="roads_width" min="3" max="7" step=0.1 value=${roads_width}>
+                    </div>
+                    <div>
+                        <label for="roads_multi_colors">Colorier les routes de différentes couleurs :</label>
+                        <input type="check" id="roads_multi_colors" name="roads_multi_colors" value=${roads_multi_colors}>
+                    </div>
+                    <div>
                         <label for="timer_type">Type de chrono :</label>
                         <select name="timer_type" id="timer_type">
                         <option value="local" ${timer_type=="local"? "selected" : ""}>Temps limité par rue</option>
@@ -691,6 +714,8 @@
                     localStorage.setItem("initial_attempts", document.getElementById("attempts_number_select").value);
                     localStorage.setItem("timer_type", document.getElementById("timer_type").value);
                     localStorage.setItem("duree_chrono", document.getElementById("duree_chrono").value);
+                    localStorage.setItem("roads_width", document.getElementById("roads_width").value);
+                    localStorage.setItem("roads_multi_colors", document.getElementById("roads_multi_colors").value);
                     window.location = "";
                 }
             }
