@@ -13,7 +13,7 @@ var CITIES_CONFIG = {
     Fontenay: {
         coords: [48.84998735534551, 2.4531255994843977],
         file: "rues_vincennes_fontenay.geojson",
-        inv_lonlat: false
+        inv_lonlat: true
     }
 };
 
@@ -53,7 +53,11 @@ async function initData() {
         
         jsonBalades.features.forEach((obj, i) => {
             if ( config.inv_lonlat ){
-                var latlngs = obj.geometry.coordinates.map(x => [x[1], x[0]]);
+                if ( obj.geometry.type == "MultiLineString"){
+                    var latlngs = obj.geometry.coordinates.map(y => y.map(x =>  [x[1], x[0]]));
+                }else{
+                    var latlngs = obj.geometry.coordinates.map(x => [x[1], x[0]]);
+                }
             }else{
                 var latlngs = obj.geometry.coordinates
             }
