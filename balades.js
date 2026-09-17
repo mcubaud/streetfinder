@@ -18,9 +18,9 @@ var CITIES_CONFIG = {
 };
 
 // --- varANTES REGEX (compilées une fois) ---
-var REGEX_RUES = /\b(rue|avenue|boulevard|cours|place|impasse|allée|ruelle|passage|pont|montée|quai|tunnel|grande rue|montee|allee|bretelle|mail|cite|anse|carrefour|chaussee|chemin|clos|cote|cour|degre|descente|dreve|escoussiere|esplanade|gaffe|grand route|liaison|placette|promenade|residence|rang|rampe|rond point|route|sente|sentier|square|traverse|venelle|voie|berge|digue)\b/g;
-var REGEX_STOP_WORDS = /\b(le|la|l'|les|de|du|des|d'|un|une|l|d)\b/g;
-var REGEX_MILITARY = /\b(amiral|caporal|lieutenant|capitaine|major|général|general|colonel|marechal|lieutenant colonel|sergent|sergent chef|adjudant|sous lieutenant|commandant|president)\b/g;
+var REGEX_RUES = /\brue |\bavenue |\bboulevard |\bcours |\bplace |\bimpasse |\ballée |\bruelle |\bpassage |\bpont |\bmontée |\bquai |\btunnel |\bgrande rue |\bmontee |\ballee |\bbretelle |\bmail |\bcite |\banse |\bcarrefour |\bchaussee |\bchemin |\bclos |\bcote |\bcour |\bcours |\bdegre |\bdescente |\bdreve |\bescoussiere |\besplanade |\bgaffe |\bgrand route |\bliaison |\bplacette |\bpromenade |\bresidence |\brang |\brampe |\brond point |\broute |\bruelle |\bsente |\bsentier |\bsquare |\btraverse |\bvenelle |\bvoie |\bberge |\bdigue /g;
+var REGEX_STOP_WORDS = /\ble |\bla |\bl' |\bles |\bde |\bdu |\bdes |\bd' |\bun |\bune |\bl |\bd /g;
+var REGEX_MILITARY = /\bamiral |\bcaporal |\blieutenant |\bcapitaine |\bmajor |\bgénéral |\bgeneral |\bcolonel |\bmarechal |\blieutenant colonel |\bsergent |\bsergent chef |\badjudant |\bsous lieutenant |\bcommandant |\bpresident /g;
 
 // --- ETAT GLOBAL ---
 var lieu = localStorage.getItem("lieu") || "Rennes";
