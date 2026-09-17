@@ -33,7 +33,7 @@ var promise0 = new Promise((resolve, reject) => {
     if(lieu == "Rennes"){
         var geojson = "rues_rennes.geojson";
     }
-	(lieu == "Fontenay"){
+	if(lieu == "Fontenay"){
 	    var geojson = "rues_vincennes_fontenay.geojson";
 	}
     fetch(geojson)
