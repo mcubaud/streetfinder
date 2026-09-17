@@ -19,6 +19,27 @@
    <script src="https://d3js.org/d3.v7.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+	<script src="https://unpkg.com/maplibre-gl@3.x/dist/maplibre-gl.js"></script>
+	<link href="https://unpkg.com/maplibre-gl@3.x/dist/maplibre-gl.css" rel="stylesheet" />
+	
+	<script>
+	  const map = new maplibregl.Map({
+	    container: 'mapid',
+	    // Style Positron sans clé API
+	    style: 'https://tiles.openfreemap.org/styles/positron', 
+	    center: [-1.6767, 48.1110], // Rennes [lng, lat]
+	    zoom: 12
+	  });
+	
+	  // Cacher dynamiquement la couche des labels de texte une fois la carte chargée :
+	  map.on('load', () => {
+	    map.getStyle().layers.forEach(layer => {
+	      if (layer.type === 'symbol' && layer.layout && layer.layout['text-field']) {
+	        map.setLayoutProperty(layer.id, 'visibility', 'none');
+	      }
+	    });
+	  });
+	</script>
   <style>
     #mapid {height:100% ;}
   </style>
