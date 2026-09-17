@@ -148,6 +148,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
+        // --- CONFIGURATION PAR VILLE ---
         var CITIES_CONFIG = {
             Lyon: {
                 coords: [45.75728373443727, 4.849433898925782],
@@ -171,11 +172,45 @@
                 inv_lonlat: true
             }
         };
+        
+        // --- CONSTANTES REGEX (compilées une fois) ---
+        var REGEX_RUES = /\brue |\bavenue |\bboulevard |\bcours |\bplace |\bimpasse |\ballée |\bruelle |\bpassage |\bpont |\bmontée |\bquai |\btunnel |\bgrande rue |\bmontee |\ballee |\bbretelle |\bmail |\bcite |\banse |\bcarrefour |\bchaussee |\bchemin |\bclos |\bcote |\bcour |\bcours |\bdegre |\bdescente |\bdreve |\bescoussiere |\besplanade |\bgaffe |\bgrand route |\bliaison |\bplacette |\bpromenade |\bresidence |\brang |\brampe |\brond point |\broute |\bruelle |\bsente |\bsentier |\bsquare |\btraverse |\bvenelle |\bvoie |\bberge |\bdigue |\bpasserelle /g;
+        var REGEX_STOP_WORDS = /\ble |\bla |\bl' |\bles |\bde |\bdu |\bdes |\bd' |\bun |\bune |\bl |\bd /g;
+        var REGEX_MILITARY = /\bamiral |\bcaporal |\blieutenant |\bcapitaine |\bmajor |\bgénéral |\bgeneral |\bcolonel |\bmarechal |\blieutenant colonel |\bsergent |\bsergent chef |\badjudant |\bsous lieutenant |\bcommandant |\bpresident /g;
+        // --- PARAMÈTRES & ÉTAT DU JEU ---
         var lieu = localStorage.getItem("lieu") || "Rennes";
         var config = CITIES_CONFIG[lieu] || CITIES_CONFIG["Rennes"];
-
-
-        // --- INITIALISATION TITRE ET CARTE ---
+        
+        var initialAttempts = parseInt(localStorage.getItem("initial_attempts")) || 3;
+        let attemptsLeft = initialAttempts;
+        
+        var mode = localStorage.getItem("mode") || "par_distance_au_centre_predefini";
+        var timerType = localStorage.getItem("timer_type") || "local";
+        
+        let initialTime = localStorage.getItem("duree_chrono");
+        if (!initialTime) {
+            if (timerType === "local") initialTime = 30;
+            else if (timerType === "global") initialTime = 3600;
+            else initialTime = "illimité";
+        }
+        let time = initialTime;
+        let timer = null;
+        
+        var roadsMultiColors = localStorage.getItem("roads_multi_colors") !== "false";
+        var roadsWidth = parseFloat(localStorage.getItem("roads_width")) || 4.1;
+        
+        let totalLength = 0;
+        let findLength = 0;
+        let notFindLength = 0;
+        
+        var polylines = {};
+        var names = {};
+        var trouves = {};
+        var trouvesUniques = [];
+        let currentStreetIndex = 0;
+        let targetStreetName = "";
+        
+        // --- INITIALISATION DE LA CARTE ---
         console.log(lieu);
         document.getElementById("titre").children[0].innerHTML += config.nom;
         document.title += ` ${lieu}`;
@@ -185,555 +220,458 @@
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
         }).addTo(mymap);
-
-        var json_balades = {};
-
-        var promise0 = new Promise((resolve, reject) => {
-            var geojson = config.file;
-            fetch(geojson)
-            .then(r => r.json())
-            .then(r => {
-                json_balades = r;
-                resolve(r);
-            });
-        });
-
-        var promise = promise0;
-        var total_length = 0;
-        var find_length = 0;
-        var not_find_length = 0;
-        var polylines = {};
-        var names = {};
-        var trouves = {};
-        var trouves_uniques = [];
-        var currentStreetIndex = 0;
-        var initial_attempts = localStorage.getItem("initial_attempts");
-        if( initial_attempts === null){
-            initial_attempts = 3;
-        }
-        var attemptsLeft = initial_attempts;
-        var mode = localStorage.getItem("mode");
-        if( mode === null){
-            mode = "par_distance_au_centre_predefini";
-        }
         
-        var timer;
-        var timer_type = localStorage.getItem("timer_type")
-        if(timer_type === null){
-            timer_type = "local";
-        }
-        var initial_time = localStorage.getItem("duree_chrono")
-        if( initial_time === null){
-            if(timer_type =="local"){
-                initial_time = 30;
-            }if(timer_type =="global"){
-                initial_time = 3600;
-            }if(timer_type =="no"){
-                initial_time = "illimité";
-            }
-        }
-        var time = initial_time;
-
-        var roads_multi_colors = localStorage.getItem("roads_multi_colors")
-        if( roads_multi_colors === null){
-            roads_multi_colors = true;
-        }
-        var roads_width = localStorage.getItem("roads_width")
-        if( roads_width === null){
-            roads_width = 4.1;
-        }
-
-
-        promise
-        .then(r => {
-            var array = r.features;
-            array = sort_street(array, mode);
-            
-            for(var i = 0; i < array.length; i++){
-                var obj = array[i];
-                var lnglats = obj.geometry.coordinates;
-                var latlngs = lnglats.map(x => [x[1], x[0]]);
-
-                try{
-                    var rd=0;
-                    if(roads_multi_colors){
+        // --- CHARGEMENT ET DÉMARRAGE ---
+        async function initGame() {
+            try {
+                var response = await fetch(config.file);
+                var data = await response.json();
+                let array = sortStreet(data.features, mode);
+        
+                array.forEach((obj, i) => {
+                    var lnglats = obj.geometry.coordinates;
+                    var latlngs = config.inv_lonlat 
+                        ? (obj.geometry.type === "MultiLineString" 
+                            ? lnglats.map(y => y.map(x => [x[1], x[0]])) 
+                            : lnglats.map(x => [x[1], x[0]]))
+                        : lnglats;
+        
+                    let rd = 0;
+                    if (roadsMultiColors) {
                         rd = Math.floor(Math.min(1.5 * obj.properties.name.length, 180));
                     }
-                  	var color = rgbToHex(59+rd, 54+rd, 75+rd)
-                    var polyline = L.polyline(latlngs, {color: color, weight:roads_width}).addTo(mymap);
+                    var color = rgbToHex(59 + rd, 54 + rd, 75 + rd);
+                    var polyline = L.polyline(latlngs, { color: color, weight: roadsWidth }).addTo(mymap);
+        
                     polyline.nom = obj.properties.name;
                     polyline.i = i;
-                    var other_tags = obj.properties.other_tags;
-                    if (other_tags && other_tags.includes("\"wikipedia\"=>\"")){
-                        try{
-                            polyline.wiki = other_tags.split("\"wikipedia\"=>\"")[1].split("\"")[0];
-                            console.log(polyline.wiki);
-                        }finally{}
+                    polyline.length = obj.properties.length || 0;
+        
+                    var otherTags = obj.properties.other_tags;
+                    if (otherTags && otherTags.includes('"wikipedia"=>"')) {
+                        polyline.wiki = otherTags.split('"wikipedia"=>"')[1].split('"')[0];
                     }
-                    polyline.length = obj.properties.length;
-                    total_length += polyline.length;
-                    polyline._path.nom = polyline.nom;
-                    polyline._path.i = i;
-                    polyline._path.onclick = check_clicked_street;
+        
+                    totalLength += polyline.length;
+        
+                    if (polyline._path) {
+                        polyline._path.nom = polyline.nom;
+                        polyline._path.i = i;
+                        polyline._path.onclick = checkClickedStreet;
+                    }
+        
                     polylines[i] = polyline;
                     names[i] = obj.properties.name;
                     trouves[i] = false;
-                }finally{}
-            }
-            askNextStreet();
-            if(timer_type=="global"){
-                launch_timer();
-            }
-        });
-
-
-        function sort_street(array, mode){
-            if(mode=="par_distance_au_centre"){
-                sum_x = 0
-                sum_y = 0
-                for(var i = 0; i < array.length; i++){
-                    sum_x+=array[i].geometry.coordinates[0][0]
-                sum_y+=array[i].geometry.coordinates[0][1]
+                });
+        
+                askNextStreet();
+                if (timerType === "global") {
+                    launchTimer();
                 }
-                for(var i = 0; i < array.length; i++){
-                    array[i].distance=Math.sqrt((array[i].geometry.coordinates[0][0]-sum_x/array.length)**2 + (array[i].geometry.coordinates[0][1]-sum_y/array.length)**2 )
-                }
-                array.sort((a, b) => a.distance - b.distance);
-                return array
-            }
-            if(mode=="par_distance_au_centre_predefini"){
-                for(var i = 0; i < array.length; i++){
-                    array[i].distance=Math.sqrt((array[i].geometry.coordinates[0][0]-centre[1])**2 + (array[i].geometry.coordinates[0][1]-centre[0])**2 )
-                }
-                array.sort((a, b) => a.distance - b.distance);
-                return array
-            }
-            if(mode=="par_taille_des_segments"){
-                array.sort((a, b) => b.properties.length - a.properties.length);
-                return array
-            }
-            if(mode=="par_longueur_totale"){
-                for(var i = 0; i < array.length; i++){
-                    var longueur=0
-                    var name = array[i].properties.name
-                    for(var j = 0; j < array.length; j++){
-                        if(name === array[j].properties.name){
-                            longueur+=array[j].properties.length;
-                        }
-                    }
-                    array[i].longueur=longueur;
-                }
-                array.sort((a, b) => b.longueur - a.longueur)
-                return array
-
-            }
-            if(mode=="random"){
-                array.sort((a, b) => Math.random() - Math.random());
-                return array
-            }
-            else{
-                return array
+            } catch (err) {
+                console.error("Erreur d'initialisation des données :", err);
             }
         }
-
-        function print_score(){
-            var asked_length = find_length + not_find_length;
-            if(asked_length==0){
-                document.getElementById("score").innerHTML = Math.round(find_length/1000) + " / " + Math.round(asked_length/1000) + " km (" + 0 + "%) des rues trouvées";
-                document.getElementById("score").style["color"] = couleur_par_score(0);
-            }else{
-                document.getElementById("score").innerHTML = Math.round(find_length/1000) + " / " + Math.round(asked_length/1000) + " km (" + Math.round(100*find_length/asked_length) + "%) des rues trouvées";
-                document.getElementById("score").style["color"] = couleur_par_score(find_length/asked_length);
+        
+        initGame();
+        
+        // --- LOGIQUE DU JEU ---
+        function sortStreet(array, mode) {
+            if (mode === "par_distance_au_centre") {
+                let sumX = 0, sumY = 0;
+                array.forEach(item => {
+                    sumX += item.geometry.coordinates[0][0];
+                    sumY += item.geometry.coordinates[0][1];
+                });
+                var centerX = sumX / array.length;
+                var centerY = sumY / array.length;
+        
+                array.forEach(item => {
+                    item.distance = Math.sqrt((item.geometry.coordinates[0][0] - centerX) ** 2 + (item.geometry.coordinates[0][1] - centerY) ** 2);
+                });
+                return array.sort((a, b) => a.distance - b.distance);
             }
             
-        }
-
-
-        function chercher(){
-            var adresse = $("#inputAdresse").val();
-            console.log(adresse);
-            if(adresse != ""){
-                var found = false;
-                var alreadyFound = false;
-                var last_already;
-                for(let i in polylines){
-                    var name2 = names[i];
-                    if(are_similar(adresse, name2)){
-                        if(trouves[i]){
-                            alreadyFound = true;
-                            last_already = polylines[i];
-                        }
-                        else{
-                            if (i == currentStreetIndex) {
-                                polylines[i].setStyle({"color":"green"});
-                                polylines[i].bindTooltip(name2);
-                                if(polylines[i].wiki){
-                                    var [langue, page] = polylines[i].wiki.split(":");
-                                    polylines[i].bindPopup(
-                                        "<iframe style='height:400px;' src='https://" + langue + ".m.wikipedia.org/wiki/" + page + "'></iframe>"
-                                    );
-                                }
-                                found = true;
-                                find_length += polylines[i].length;
-                                trouves[i] = true;
-                                if (!trouves_uniques.includes(name2)){
-                                    add_in_list_found(name2, polylines[i]);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-                if(found){
-                    document.getElementById("inputAdresse").value = "";
-                    print_score();
-                    inputAdresse.classList.add("clignoter_vert");
-                    setTimeout(() => { inputAdresse.classList.remove("clignoter_vert"); }, 1000);
-                    askNextStreet();
-                } else if(alreadyFound){
-                    last_already.openPopup();
-                    mymap.flyToBounds(last_already.getBounds());
-                    inputAdresse.classList.add("secouer_petit_orange");
-                    setTimeout(() => { inputAdresse.classList.remove("secouer_petit_orange"); }, 1000);
-                } else {
-                    inputAdresse.classList.add("secouer_petit");
-                    setTimeout(() => { inputAdresse.classList.remove("secouer_petit"); }, 1000);
-                    attemptsLeft--;
-                    if (attemptsLeft <= 0) {
-                        alert("You lost! No more attempts left.");
-                        // Optionally, you can reset the game here
-                        resetGame();
-                    }
-                }
+            if (mode === "par_distance_au_centre_predefini" && typeof centre !== "undefined") {
+                array.forEach(item => {
+                    item.distance = Math.sqrt((item.geometry.coordinates[0][0] - centre[1]) ** 2 + (item.geometry.coordinates[0][1] - centre[0]) ** 2);
+                });
+                return array.sort((a, b) => a.distance - b.distance);
             }
-        }
-
-        function standardize(str){
-            str = str.toLowerCase().replace(/-/g, " ").replace(/œ/g, "oe").replace(/'/g, "' ");
-            var lettres_accentuees = "àäâéèêëîïôöùüûÿ".split("");
-            var lettres_normales = "aaaeeeeiioouuuy".split("");
-            for(let i = 0; i < lettres_normales.length; i++){
-                str = str.replace(new RegExp(lettres_accentuees[i], 'g'), lettres_normales[i]);
+            
+            if (mode === "par_taille_des_segments") {
+                return array.sort((a, b) => (b.properties.length || 0) - (a.properties.length || 0));
             }
-            return str;
-        }
-
-
-        function are_similar(nom1, nom2){
-            var exact_match = standardize(nom1)==standardize(nom2);
-            var regex_rues = /\brue |\bavenue |\bboulevard |\bcours |\bplace |\bimpasse |\ballée |\bruelle |\bpassage |\bpont |\bmontée |\bquai |\btunnel |\bgrande rue |\bmontee |\ballee |\bbretelle |\bmail |\bcite |\banse |\bcarrefour |\bchaussee |\bchemin |\bclos |\bcote |\bcour |\bcours |\bdegre |\bdescente |\bdreve |\bescoussiere |\besplanade |\bgaffe |\bgrand route |\bliaison |\bplacette |\bpromenade |\bresidence |\brang |\brampe |\brond point |\broute |\bruelle |\bsente |\bsentier |\bsquare |\btraverse |\bvenelle |\bvoie |\bberge |\bdigue /g;
-            var regex_stop_words = /\ble |\bla |\bl' |\bles |\bde |\bdu |\bdes |\bd' |\bun |\bune |\bl |\bd /g;
-            var regex_military = /\bamiral |\bcaporal |\blieutenant |\bcapitaine |\bmajor |\bgénéral |\bgeneral |\bcolonel |\bmarechal |\blieutenant colonel |\bsergent |\bsergent chef |\badjudant |\bsous lieutenant |\bcommandant |\bpresident /g;
-            var partial_match = standardize(nom1).replaceAll(regex_stop_words,"")==standardize(nom2).replaceAll(regex_rues,"").replaceAll(regex_stop_words,"").replaceAll(regex_military, "");
-            return exact_match | partial_match;
+            
+            if (mode === "par_longueur_totale") {
+                var lengthMap = {};
+                array.forEach(item => {
+                    var name = item.properties.name;
+                    lengthMap[name] = (lengthMap[name] || 0) + (item.properties.length || 0);
+                });
+                array.forEach(item => item.longueur = lengthMap[item.properties.name]);
+                return array.sort((a, b) => b.longueur - a.longueur);
             }
-
-
-        function askNextStreet(){
-            if (currentStreetIndex < Object.keys(names).length) {
-                targetstreetName = names[currentStreetIndex];
-                if(trouves_uniques.includes(targetstreetName)){
+            
+            if (mode === "random") {
+                return array.sort(() => Math.random() - 0.5);
+            }
+        
+            return array;
+        }
+        
+        function askNextStreet() {
+            var totalStreets = Object.keys(names).length;
+            if (currentStreetIndex < totalStreets) {
+                targetStreetName = names[currentStreetIndex];
+        
+                if (trouvesUniques.includes(targetStreetName)) {
                     currentStreetIndex++;
                     askNextStreet();
+                    return;
                 }
-                print_score()
-                document.getElementById("target_street").innerHTML = "<b>Rue à trouver </b>: "+targetstreetName
-                attemptsLeft = initial_attempts;
-                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes";
-                if(timer_type == "local"){
-                    launch_timer();
+        
+                printScore();
+                document.getElementById("target_street").innerHTML = `<b>Rue à trouver </b>: ${targetStreetName}`;
+                attemptsLeft = initialAttempts;
+                document.getElementById("remaining_attempts").innerHTML = `${attemptsLeft} tentatives restantes`;
+        
+                if (timerType === "local") {
+                    launchTimer();
                 }
                 currentStreetIndex++;
             } else {
                 alert("Bravo ! Vous avez trouvé toutes les rues !");
-                print_score()
+                printScore();
             }
         }
-
-        document.getElementById("passer").onclick=function(){
-            color_roads(targetstreetName, "red");
-            askNextStreet()
-        }
-
-        function launch_timer(){
-            clearInterval(timer);
-            time = initial_time;
-            timer = setInterval(function(){
-                time--
-                document.getElementById("remaining_time").innerHTML=time+"s"
-                document.getElementById("remaining_time").style.color=couleur_par_score(time/initial_time);
-                if(time<=0){
-                    clearInterval(timer);
-                    if(timer_type == "local"){
-                        color_roads(targetstreetName, "red");
-                        document.getElementById("very_bad_bip").play();
-                        askNextStreet();
-                    }
-                    if(timer_type == "global"){
-                        alert("Temps écoulé ! Perdu");
-                        window.location=""
-                    }
-                }
-            }, 1000)
-        }
-
-        function check_clicked_street(e){
-            console.log(e.target);
-            polyline = e.target
-            name2 = polyline.nom
-            if( are_similar(targetstreetName, name2) ){
-                trouves[polylines.i]=true;
-                color_roads(targetstreetName, "green");
-                document.getElementById("good_bip").play();
+        
+        function checkClickedStreet(e) {
+            var polyline = e.target;
+            var clickedName = polyline.nom;
+        
+            if (areSimilar(targetStreetName, clickedName)) {
+                trouves[polyline.i] = true;
+                colorRoads(targetStreetName, "green");
+                document.getElementById("good_bip")?.play();
                 askNextStreet();
-            }else{
-                attemptsLeft -=1;
-                document.getElementById("remaining_attempts").classList.add("secouer_petit_orange");
-                setTimeout(() => { document.getElementById("remaining_attempts").classList.remove("secouer_petit_orange"); }, 1000);
-                
-                document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentatives restantes";
-                if(attemptsLeft<=0){
-                    color_roads(targetstreetName, "red");
-                    document.getElementById("very_bad_bip").play();
+            } else {
+                attemptsLeft--;
+                var attemptsElem = document.getElementById("remaining_attempts");
+                attemptsElem.classList.add("secouer_petit_orange");
+                setTimeout(() => attemptsElem.classList.remove("secouer_petit_orange"), 1000);
+        
+                if (attemptsLeft <= 0) {
+                    colorRoads(targetStreetName, "red");
+                    document.getElementById("very_bad_bip")?.play();
                     askNextStreet();
-                }else{
-                    document.getElementById("bad_bip").play();
-                    if(attemptsLeft==1){
-                        document.getElementById("remaining_attempts").innerHTML = attemptsLeft+" tentative restante";
+                } else {
+                    document.getElementById("bad_bip")?.play();
+                    attemptsElem.innerHTML = `${attemptsLeft} tentative${attemptsLeft > 1 ? "s" : ""} restante${attemptsLeft > 1 ? "s" : ""}`;
+                }
+            }
+        }
+        
+        function colorRoads(name, color) {
+            for (let i in polylines) {
+                var currentName = names[i];
+                if (areSimilar(name, currentName)) {
+                    trouves[i] = true;
+                    polylines[i].setStyle({ color: color });
+                    polylines[i].bindTooltip(currentName);
+        
+                    if (polylines[i].wiki) {
+                        var [langue, page] = polylines[i].wiki.split(":");
+                        polylines[i].bindPopup(
+                            `<iframe style='height:400px; width:100%; border:none;' src='https://${langue}.m.wikipedia.org/wiki/${page}'></iframe>`
+                        );
+                    }
+        
+                    if (color === "green") {
+                        findLength += polylines[i].length;
+                    } else {
+                        notFindLength += polylines[i].length;
+                    }
+        
+                    if (!trouvesUniques.includes(currentName)) {
+                        if (color === "green") {
+                            addInListFound(currentName, polylines[i]);
+                        } else {
+                            addInListNotFound(currentName, polylines[i]);
+                        }
                     }
                 }
             }
         }
-
-        function color_roads(name, color){
-            for(let i in polylines){
-                    var name2 = names[i];
-                    if(are_similar(name, name2)){
-                        trouves[i] = true;
-                        polylines[i].setStyle({"color":color});
-                        polylines[i].bindTooltip(name2);   
-                        if(polylines[i].wiki){
-                            var [langue, page] = polylines[i].wiki.split(":");
-                            polylines[i].bindPopup(
-                                "<iframe style='height:400px;' src='https://" + langue + ".m.wikipedia.org/wiki/" + page + "'></iframe>"
-                            );
-                        }
-                        if(color=="green"){
-                            find_length += polylines[i].length;
-                        }else{
-                            not_find_length += polylines[i].length;
-
-                        }
-                        if (!trouves_uniques.includes(name2)){
-                            if(color=="green"){
-                                add_in_list_found(name2, polylines[i]);
-                            }else{
-                                add_in_list_not_found(name2, polylines[i]);
-
-                            }
-                            
-                        }
+        
+        function launchTimer() {
+            clearInterval(timer);
+            time = initialTime;
+        
+            timer = setInterval(() => {
+                time--;
+                var timerElem = document.getElementById("remaining_time");
+                if (timerElem) {
+                    timerElem.innerHTML = `${time}s`;
+                    timerElem.style.color = couleurParScore(time / initialTime);
+                }
+        
+                if (time <= 0) {
+                    clearInterval(timer);
+                    if (timerType === "local") {
+                        colorRoads(targetStreetName, "red");
+                        document.getElementById("very_bad_bip")?.play();
+                        askNextStreet();
+                    } else if (timerType === "global") {
+                        alert("Temps écoulé ! Perdu");
+                        window.location.reload();
                     }
                 }
+            }, 1000);
         }
-
-        function resetGame() {
-            // Reset game logic here if needed
-            location.reload();
-        }
-
-        function couleur_par_score(pts){
-            if(pts < 0.5){
-              return rgbToHex(
-                  Math.floor(255),
-                  Math.floor(255 * 2 * pts),
-                  0);
-            }else{
-              return rgbToHex(
-                  Math.floor(255 - 255 * pts / 2),
-                  Math.floor(255),
-                  0);
+        
+        document.getElementById("passer").onclick = () => {
+            colorRoads(targetStreetName, "red");
+            askNextStreet();
+        };
+        
+        function printScore() {
+            var askedLength = findLength + notFindLength;
+            var scoreElem = document.getElementById("score");
+        
+            if (askedLength === 0) {
+                scoreElem.innerHTML = `0 / 0 km (0%) des rues trouvées`;
+                scoreElem.style.color = couleurParScore(0);
+            } else {
+                var ratio = findLength / askedLength;
+                scoreElem.innerHTML = `${Math.round(findLength / 1000)} / ${Math.round(askedLength / 1000)} km (${Math.round(100 * ratio)}%) des rues trouvées`;
+                scoreElem.style.color = couleurParScore(ratio);
             }
         }
-
+        
+        // --- PARSING & COMPARAISON DE TEXTE ---
+        function standardize(str) {
+            return str
+                .toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/-/g, " ")
+                .replace(/œ/g, "oe")
+                .replace(/'/g, "' ");
+        }
+        
+        function areSimilar(nom1, nom2) {
+            var std1 = standardize(nom1);
+            var std2 = standardize(nom2);
+        
+            var exactMatch = std1 === std2;
+            var partialMatch = std1.replace(REGEX_STOP_WORDS, "") ===
+                std2.replace(REGEX_RUES, "").replace(REGEX_STOP_WORDS, "").replace(REGEX_MILITARY, "");
+        
+            return Boolean(exactMatch || partialMatch);
+        }
+        
+        function couleurParScore(pts) {
+            if (pts < 0.5) {
+                return rgbToHex(255, Math.floor(255 * 2 * pts), 0);
+            }
+            return rgbToHex(Math.floor(255 - 255 * (pts / 2)), 255, 0);
+        }
+        
         function componentToHex(c) {
-            let hex = c.toString(16);
-            return hex.length == 1 ? "0" + hex : hex;
+            var hex = c.toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
         }
-
+        
         function rgbToHex(r, g, b) {
-            return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+            return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
         }
-
-        function hexToRgb(hex){
-            var r = parseInt(hex.slice(1, 3), 16);
-            var g = parseInt(hex.slice(3, 5), 16);
-            var b = parseInt(hex.slice(5, 7), 16);
-            return [r, g, b];
+        
+        // --- GESTION DOM DES LISTES ---
+        function addInListFound(name, thisPolyline) {
+            var nameStd = standardize(name).replace(/' /g, "_").replace(/ /g, "_");
+            var li = document.createElement("li");
+            li.id = `list_found_${nameStd}`;
+            li.textContent = name;
+        
+            li.onclick = () => {
+                thisPolyline.openTooltip();
+                var latLngs = thisPolyline.getLatLngs();
+                if (latLngs.length > 0) mymap.panTo(latLngs[0]);
+            };
+        
+            document.getElementById("list_found").appendChild(li);
+            li.scrollIntoView();
+            trouvesUniques.push(name);
         }
-
-        function downloadObjectAsJson(exportObj, exportName){
+        
+        function addInListNotFound(name, thisPolyline) {
+            var nameStd = standardize(name).replace(/' /g, "_").replace(/ /g, "_");
+            var li = document.createElement("li");
+            li.id = `list_not_found_${nameStd}`;
+            li.textContent = name;
+        
+            li.onclick = () => {
+                thisPolyline.openTooltip();
+                var latLngs = thisPolyline.getLatLngs();
+                if (latLngs.length > 0) mymap.panTo(latLngs[0]);
+            };
+        
+            document.getElementById("list_not_found").appendChild(li);
+            li.scrollIntoView();
+            trouvesUniques.push(name);
+        }
+        
+        // --- SAUVEGARDE ET CHARGEMENT ---
+        document.getElementById("save").onclick = () => {
+            downloadObjectAsJson(trouves, `streetfinder_save_${lieu}`);
+        };
+        
+        function uploadSave(savedTrouvees) {
+            for (let i in polylines) {
+                var currentName = names[i];
+                if (savedTrouvees[i]) {
+                    polylines[i].setStyle({ color: "green" });
+                    polylines[i].bindTooltip(currentName);
+        
+                    if (polylines[i].wiki) {
+                        var [langue, page] = polylines[i].wiki.split(":");
+                        polylines[i].bindPopup(
+                            `<iframe style='height:400px; width:100%; border:none;' src='https://${langue}.m.wikipedia.org/wiki/${page}'></iframe>`
+                        );
+                    }
+        
+                    if (!trouves[i]) {
+                        findLength += polylines[i].length;
+                        trouves[i] = true;
+                    }
+                    if (!trouvesUniques.includes(currentName)) {
+                        addInListFound(currentName, polylines[i]);
+                    }
+                }
+            }
+            printScore();
+        }
+        
+        document.getElementById("upload").onchange = function () {
+            var file = this.files[0];
+            if (!file) return;
+            var urlfile = URL.createObjectURL(file);
+            fetch(urlfile)
+                .then(r => r.json())
+                .then(uploadSave);
+        };
+        
+        function downloadObjectAsJson(exportObj, exportName) {
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
             var downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", exportName + ".json");
-            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.setAttribute("download", `${exportName}.json`);
+            document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
         }
-
-        document.getElementById("save").onclick = function(){
-            downloadObjectAsJson(trouves, "streetfinder_save_" + lieu);
-        }
-
-        function upload_save(saved_trouvees){
-            for(let i in polylines){
-                var name2 = names[i];
-                if(saved_trouvees[i]){
-                    polylines[i].setStyle({"color":"green"});
-                    polylines[i].bindTooltip(name2);
-                    if(polylines[i].wiki){
-                        var [langue, page] = polylines[i].wiki.split(":");
-                        polylines[i].bindPopup(
-                            "<iframe style='height:400px;' src='https://" + langue + ".m.wikipedia.org/wiki/" + page + "'></iframe>"
-                        );
-                    }
-                    if (!trouves[i]){
-                        find_length += polylines[i].length;
-                        trouves[i] = true;
-                    }
-                    if (!trouves_uniques.includes(name2)){
-                        add_in_list_found(name2, polylines[i]);
-                    }
-                }
+        
+        // --- MENU DE PARAMÈTRES ---
+        document.getElementById("settings").onclick = function () {
+            let divSettings = document.getElementById("div_settings");
+            if (divSettings) {
+                divSettings.remove();
+                return;
             }
-            print_score();
-        }
-
-        function add_in_list_found(name, thispolyline){
-            var name_std = standardize(name).replace(/' /g, "_").replace(/ /g, "_");
-            var li = document.createElement("li");
-            li.innerHTML = "<li id='list_found_" + name_std + "'>" + name + "</li>";
-            document.getElementById("list_found").appendChild(li);
-            document.getElementById("list_found_" + name_std).onclick = function(){
-                thispolyline.openTooltip();
-                mymap.panTo(thispolyline._latlngs[0], thispolyline._latlngs[1]);
-            }
-            document.getElementById("list_found_" + name_std).scrollIntoView();
-            trouves_uniques.push(name);
-        }
-        function add_in_list_not_found(name, thispolyline){
-            var name_std = standardize(name).replace(/' /g, "_").replace(/ /g, "_");
-            var li = document.createElement("li");
-            li.innerHTML = "<li id='list_not_found_" + name_std + "'>" + name + "</li>";
-            document.getElementById("list_not_found").appendChild(li);
-            document.getElementById("list_not_found_" + name_std).onclick = function(){
-                thispolyline.openTooltip();
-                mymap.panTo(thispolyline._latlngs[0], thispolyline._latlngs[1]);
-            }
-            document.getElementById("list_not_found_" + name_std).scrollIntoView();
-            trouves_uniques.push(name);
-        }
-
-        document.getElementById("upload").onchange = function(){
-            var file = document.getElementById("upload").files[0];
-            var urlfile = URL.createObjectURL(file);
-            fetch(urlfile)
-            .then(r => r.json())
-            .then(r => upload_save(r));
-        }
-
-        document.getElementById("settings").onclick = function(){
-            if(document.getElementById("div_settings")!=null){
-                document.getElementById("div_settings").remove();
-            }else{
-
-                div_settings = document.createElement("div");
-                div_settings.id = "div_settings";
-                div_settings.innerHTML=`
+        
+            divSettings = document.createElement("div");
+            divSettings.id = "div_settings";
+            divSettings.innerHTML = `
                 <h2>Paramètres</h2>
                 <div>
                     <div>
                         <label for="choix_lieu">Choix de la ville :</label>
                         <select name="choix_lieu" id="choix_lieu">
-                        <option value="Rennes" ${lieu=="Rennes"? "selected" : ""}>Rennes</option>
-                        <option value="Lyon" selected='${lieu=="Lyon"? "selected" : ""}'>Lyon</option>
+                            <option value="Rennes" ${lieu === "Rennes" ? "selected" : ""}>Rennes</option>
+                            <option value="Lyon" ${lieu === "Lyon" ? "selected" : ""}>Lyon</option>
+                            <option value="Fontenay" ${lieu === "Fontenay" ? "selected" : ""}>Fontenay</option>
                         </select>
                     </div>
                     <div>
                         <label for="asked_order">Ordre de demande des rues :</label>
                         <select name="asked_order" id="asked_order">
-                        <option value="par_distance_au_centre_predefini" ${mode=="par_distance_au_centre_predefini"? "selected" : ""}>Par distance à un centre prédéfini</option>
-                        <option value="par_distance_au_centre" ${mode=="par_distance_au_centre"? "selected" : ""}>Par distance à un centre calculé</option>
-                        <option value="par_taille_des_segments" ${mode=="par_taille_des_segments"? "selected" : ""}>Par taille des segments</option>
-                        <option value="par_longueur_totale" ${mode=="par_longueur_totale"? "selected" : ""}>Par longueur totale de la rue (lent)</option>
-                        <option value="random" ${mode=="random"? "selected" : ""}>Ordre aléatoire</option>
+                            <option value="par_distance_au_centre_predefini" ${mode === "par_distance_au_centre_predefini" ? "selected" : ""}>Par distance à un centre prédéfini</option>
+                            <option value="par_distance_au_centre" ${mode === "par_distance_au_centre" ? "selected" : ""}>Par distance à un centre calculé</option>
+                            <option value="par_taille_des_segments" ${mode === "par_taille_des_segments" ? "selected" : ""}>Par taille des segments</option>
+                            <option value="par_longueur_totale" ${mode === "par_longueur_totale" ? "selected" : ""}>Par longueur totale de la rue (lent)</option>
+                            <option value="random" ${mode === "random" ? "selected" : ""}>Ordre aléatoire</option>
                         </select>
                     </div>
                     <div>
                         <label for="attempts_number_select">Nombre de tentatives :</label>
-                        <input type="number" id="attempts_number_select" name="attempts_number_select" min="1" max="5" value=${initial_attempts}>
+                        <input type="number" id="attempts_number_select" name="attempts_number_select" min="1" max="5" value="${initialAttempts}">
                     </div>
                     <div style="display: flex;">
                         <label for="roads_width">Largeur des traits des routes :</label>
-                        <input type="number" id="roads_width" name="roads_width" min="3" max="7" step=0.1 value=${roads_width}>
-                        <div id="road_exemple" style="background-color: black;height: auto;width: ${roads_width}px;margin-left: 10px;"></div>
+                        <input type="number" id="roads_width" name="roads_width" min="3" max="7" step="0.1" value="${roadsWidth}">
+                        <div id="road_exemple" style="background-color: black; height: auto; width: ${roadsWidth}px; margin-left: 10px;"></div>
                     </div>
                     <div>
                         <label for="roads_multi_colors">Colorier les routes de différentes couleurs :</label>
-                        <input type="checkbox" id="roads_multi_colors" name="roads_multi_colors" ${roads_multi_colors? "checked" : ""}>
+                        <input type="checkbox" id="roads_multi_colors" name="roads_multi_colors" ${roadsMultiColors ? "checked" : ""}>
                     </div>
                     <div>
                         <label for="timer_type">Type de chrono :</label>
                         <select name="timer_type" id="timer_type">
-                        <option value="local" ${timer_type=="local"? "selected" : ""}>Temps limité par rue</option>
-                        <option value="global" ${timer_type=="global"? "selected" : ""}>Temps limité pour toutes les rues</option>
-                        <option value="no" ${timer_type=="no"? "selected" : ""}>Pas de temps limité</option>
+                            <option value="local" ${timerType === "local" ? "selected" : ""}>Temps limité par rue</option>
+                            <option value="global" ${timerType === "global" ? "selected" : ""}>Temps limité pour toutes les rues</option>
+                            <option value="no" ${timerType === "no" ? "selected" : ""}>Pas de temps limité</option>
                         </select>
                     </div>
-                    <div id="div_duree_chrono" style="visibility:${(timer_type=="no")? 'hidden' : 'visible'};">
+                    <div id="div_duree_chrono" style="visibility:${timerType === "no" ? "hidden" : "visible"};">
                         <label for="duree_chrono">Durée du chrono (s):</label>
-                        <input type="number" id="duree_chrono" name="duree_chrono" min="1" value="30" step="1">
+                        <input type="number" id="duree_chrono" name="duree_chrono" min="1" value="${initialTime === "illimité" ? 30 : initialTime}" step="1">
                     </div>
                 </div>
                 <div style="display: flex">
                     <button id="valider">Valider et relancer la partie</button>
                     <button id="revenir">Annuler et revenir à la partie</button>
                 </div>
-                `;
-                document.querySelector("body").appendChild(div_settings);
-                document.getElementById("timer_type").onchange=function(){
-                    if(document.getElementById("timer_type").value=="no"){
-                        document.getElementById("div_duree_chrono").style.visibility="hidden";
-                    }
-                    if(document.getElementById("timer_type").value=="local"){
-                        document.getElementById("div_duree_chrono").style.visibility="visible";
-                        document.getElementById("duree_chrono").outerHTML=`<input type="number" id="duree_chrono" name="duree_chrono" min="1" value="30" step="1">`;
-                    }
-                    if(document.getElementById("timer_type").value=="global"){
-                        document.getElementById("div_duree_chrono").style.visibility="visible";
-                        document.getElementById("duree_chrono").outerHTML=`<input type="number" id="duree_chrono" name="duree_chrono" min="1" value="3600" step="60">`;
-                    }
+            `;
+        
+            document.body.appendChild(divSettings);
+        
+            document.getElementById("timer_type").onchange = function () {
+                var val = this.value;
+                var divChrono = document.getElementById("div_duree_chrono");
+                var inputChrono = document.getElementById("duree_chrono");
+        
+                if (val === "no") {
+                    divChrono.style.visibility = "hidden";
+                } else if (val === "local") {
+                    divChrono.style.visibility = "visible";
+                    inputChrono.value = 30;
+                    inputChrono.step = 1;
+                } else if (val === "global") {
+                    divChrono.style.visibility = "visible";
+                    inputChrono.value = 3600;
+                    inputChrono.step = 60;
                 }
-                document.getElementById("roads_width").onchange = function(){
-                    document.getElementById("road_exemple").style.width = document.getElementById("roads_width").value+"px";
-                    }
-
-                document.getElementById("revenir").onclick=function(){
-                    document.getElementById("div_settings").remove();
-                }
-                document.getElementById("valider").onclick=function(){
-                    localStorage.setItem("lieu", document.getElementById("choix_lieu").value);
-                    localStorage.setItem("mode", document.getElementById("asked_order").value);
-                    localStorage.setItem("initial_attempts", document.getElementById("attempts_number_select").value);
-                    localStorage.setItem("timer_type", document.getElementById("timer_type").value);
-                    localStorage.setItem("duree_chrono", document.getElementById("duree_chrono").value);
-                    localStorage.setItem("roads_width", document.getElementById("roads_width").value);
-                    localStorage.setItem("roads_multi_colors", document.getElementById("roads_multi_colors").checked);
-                    window.location = "";
-                }
-            }
-        }
+            };
+        
+            document.getElementById("roads_width").oninput = function () {
+                document.getElementById("road_exemple").style.width = `${this.value}px`;
+            };
+        
+            document.getElementById("revenir").onclick = () => divSettings.remove();
+        
+            document.getElementById("valider").onclick = () => {
+                localStorage.setItem("lieu", document.getElementById("choix_lieu").value);
+                localStorage.setItem("mode", document.getElementById("asked_order").value);
+                localStorage.setItem("initial_attempts", document.getElementById("attempts_number_select").value);
+                localStorage.setItem("timer_type", document.getElementById("timer_type").value);
+                localStorage.setItem("duree_chrono", document.getElementById("duree_chrono").value);
+                localStorage.setItem("roads_width", document.getElementById("roads_width").value);
+                localStorage.setItem("roads_multi_colors", document.getElementById("roads_multi_colors").checked);
+                window.location.reload();
+            };
+        };
     </script>
 </body>
 </html>
