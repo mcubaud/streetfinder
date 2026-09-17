@@ -33,7 +33,7 @@ L.marker([45.75728373443727, 4.849433898925782], {icon: LyonIcon}).addTo(mymap)
 L.marker([48.11105621460431, -1.676739113603782], {icon: RennesIcon}).addTo(mymap)
     .bindPopup('<button onclick="choisir(Rennes)">Choisir Rennes</button><button onclick="choisir_inverse(Rennes)">Choisir Rennes (inverse)</button>')
 
-L.marker([48.84853017902008, 2.462542359272333], {icon: RennesIcon}).addTo(mymap)
+L.marker([48.84853017902008, 2.462542359272333], {icon: FontenayIcon}).addTo(mymap)
     .bindPopup('<button onclick="choisir(Fontenay)">Choisir Fontenay-sous-Bois et Vincennes</button><button onclick="choisir_inverse(Fontenay)">Choisir  Fontenay-sous-Bois et Vincennes (inverse)</button>')
 
 
