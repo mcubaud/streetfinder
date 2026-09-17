@@ -18,7 +18,7 @@ var CITIES_CONFIG = {
 };
 
 // --- varANTES REGEX (compilées une fois) ---
-var REGEX_RUES = /\brue |\bavenue |\bboulevard |\bcours |\bplace |\bimpasse |\ballée |\bruelle |\bpassage |\bpont |\bmontée |\bquai |\btunnel |\bgrande rue |\bmontee |\ballee |\bbretelle |\bmail |\bcite |\banse |\bcarrefour |\bchaussee |\bchemin |\bclos |\bcote |\bcour |\bcours |\bdegre |\bdescente |\bdreve |\bescoussiere |\besplanade |\bgaffe |\bgrand route |\bliaison |\bplacette |\bpromenade |\bresidence |\brang |\brampe |\brond point |\broute |\bruelle |\bsente |\bsentier |\bsquare |\btraverse |\bvenelle |\bvoie |\bberge |\bdigue /g;
+var REGEX_RUES = /\brue |\bavenue |\bboulevard |\bcours |\bplace |\bimpasse |\ballée |\bruelle |\bpassage |\bpont |\bmontée |\bquai |\btunnel |\bgrande rue |\bmontee |\ballee |\bbretelle |\bmail |\bcite |\banse |\bcarrefour |\bchaussee |\bchemin |\bclos |\bcote |\bcour |\bcours |\bdegre |\bdescente |\bdreve |\bescoussiere |\besplanade |\bgaffe |\bgrand route |\bliaison |\bplacette |\bpromenade |\bresidence |\brang |\brampe |\brond point |\broute |\bruelle |\bsente |\bsentier |\bsquare |\btraverse |\bvenelle |\bvoie |\bberge |\bdigue |\bpasserelle /g;
 var REGEX_STOP_WORDS = /\ble |\bla |\bl' |\bles |\bde |\bdu |\bdes |\bd' |\bun |\bune |\bl |\bd /g;
 var REGEX_MILITARY = /\bamiral |\bcaporal |\blieutenant |\bcapitaine |\bmajor |\bgénéral |\bgeneral |\bcolonel |\bmarechal |\blieutenant colonel |\bsergent |\bsergent chef |\badjudant |\bsous lieutenant |\bcommandant |\bpresident /g;
 
