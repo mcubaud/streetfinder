@@ -2,15 +2,18 @@
 var CITIES_CONFIG = {
     Lyon: {
         coords: [45.75728373443727, 4.849433898925782],
-        file: "rues.geojson"
+        file: "rues.geojson",
+        inv_lonlat: true
     },
     Rennes: {
         coords: [48.11105621460431, -1.676739113603782],
-        file: "rues_rennes.geojson"
+        file: "rues_rennes.geojson",
+        inv_lonlat: true
     },
     Fontenay: {
         coords: [48.84998735534551, 2.4531255994843977],
-        file: "rues_vincennes_fontenay.geojson"
+        file: "rues_vincennes_fontenay.geojson",
+        inv_lonlat: false
     }
 };
 
@@ -49,7 +52,11 @@ async function initData() {
         var jsonBalades = await response.json();
         
         jsonBalades.features.forEach((obj, i) => {
-            var latlngs = obj.geometry.coordinates.map(x => [x[1], x[0]]);
+            if ( config.inv_lonlat ){
+                var latlngs = obj.geometry.coordinates.map(x => [x[1], x[0]]);
+            }else{
+                var latlngs = obj.geometry.coordinates
+            }
             var polyline = L.polyline(latlngs, { color: '#3b364b' }).addTo(mymap);
 
             polyline.nom = obj.properties.name;
