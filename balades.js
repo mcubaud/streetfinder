@@ -41,8 +41,8 @@ document.title += ` ${lieu}`;
 
 var mymap = L.map('mapid').setView(config.coords, 13);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
-    attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?key=cb1_3our_1_ff49ad376f6ec9bfd85eb768', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>'
 }).addTo(mymap);
 
 // --- CHARGEMENT ET AFFICHAGE DES DONNÉES ---
