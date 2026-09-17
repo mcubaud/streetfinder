@@ -15,6 +15,9 @@ if(lieu == "Lyon"){
 if(lieu == "Rennes"){
     var mymap = L.map('mapid').setView([48.11105621460431, -1.676739113603782], 13);
 }
+if(lieu == "Fontenay"){
+    var mymap = L.map('mapid').setView([48.84998735534551, 2.4531255994843977], 13);
+}
 
 layer=L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
   attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
@@ -30,6 +33,9 @@ var promise0 = new Promise((resolve, reject) => {
     if(lieu == "Rennes"){
         var geojson = "rues_rennes.geojson";
     }
+	(lieu == "Fontenay"){
+	    var geojson = "rues_vincennes_fontenay.geojson";
+	}
     fetch(geojson)
     .then(r => r.json())
     .then(r => {
