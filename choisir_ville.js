@@ -1,50 +1,72 @@
-var mymap = L.map('mapid').setView([46.875378329598036, 2.565228180873064], 6);
-layer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 22, maxNativeZoom :19,
+// --- INITIALISATION DE LA CARTE ---
+const mymap = L.map('mapid').setView([46.875378329598036, 2.565228180873064], 6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 22,
+    maxNativeZoom: 19
 }).addTo(mymap);
 
-
-var LyonIcon = L.icon({
-    iconUrl: 'Blason_Ville_fr_Lyon.svg',
-    iconSize:     [60, 70], // size of the icon
-    iconAnchor:   [30, 35], // point of the icon which will correspond to marker's location
-});
-
-var RennesIcon = L.icon({
-    iconUrl: 'Blason_Ville_fr_Rennes.svg',
-    iconSize:     [60, 70], // size of the icon
-    iconAnchor:   [30, 35], // point of the icon which will correspond to marker's location
-});
-
-var FontenayIcon = L.icon({
-    iconUrl: 'fontenay.png',
-    iconSize:     [60, 70], // size of the icon
-    iconAnchor:   [30, 35], // point of the icon which will correspond to marker's location
-});
-
-var Lyon = "Lyon";
-var Rennes = "Rennes";
-var FontenayVincennes = "Fontenay et Vincennes";
-var Vincennes= "Vincennes";
-var Fontenay = "Fontenay";
-
-L.marker([45.75728373443727, 4.849433898925782], {icon: LyonIcon}).addTo(mymap)
-    .bindPopup('<button onclick="choisir(Lyon)">Choisir Lyon</button><button onclick="choisir_inverse(Lyon)">Choisir Lyon (inverse)</button>')
-
-
-L.marker([48.11105621460431, -1.676739113603782], {icon: RennesIcon}).addTo(mymap)
-    .bindPopup('<button onclick="choisir(Rennes)">Choisir Rennes</button><button onclick="choisir_inverse(Rennes)">Choisir Rennes (inverse)</button>')
-
-L.marker([48.84853017902008, 2.462542359272333], {icon: FontenayIcon}).addTo(mymap)
-    .bindPopup('<button onclick="choisir(Fontenay)">Choisir Fontenay-sous-Bois</button><button onclick="choisir_inverse(Fontenay)">Choisir Fontenay-sous-Bois (inverse)</button><button onclick="choisir(Vincennes)">Choisir Vincennes</button><button onclick="choisir_inverse(Vincennes)">Choisir Vincennes (inverse)</button><button onclick="choisir(FontenayVincennes)">Choisir Fontenay-sous-Bois et Vincennes</button><button onclick="choisir_inverse(FontenayVincennes)">Choisir Fontenay-sous-Bois et Vincennes (inverse)</button>')
-
-
-function choisir(lieu){
+// --- FONCTIONS DE REDIRECTION ---
+function choisir(lieu) {
     localStorage.setItem("lieu", lieu);
-    document.location.href = "./retrouver_les_rues.html";
+    window.location.href = "./retrouver_les_rues.html";
 }
 
-function choisir_inverse(lieu){
+function choisir_inverse(lieu) {
     localStorage.setItem("lieu", lieu);
-    document.location.href = "./jeu_inverse.html";
+    window.location.href = "./jeu_inverse.html";
 }
+
+// --- CHARGEMENT DES DONNÉES JSON ET CRÉATION DES MARQUEURS ---
+async function initMap() {
+    try {
+        const [citiesResponse, markersResponse] = await Promise.all([
+            fetch('cities.json'),
+            fetch('markers.json')
+        ]);
+
+        const citiesConfig = await citiesResponse.json();
+        const markersConfig = await markersResponse.json();
+
+        markersConfig.forEach(markerData => {
+            // Création de l'icône Leaflet
+            const customIcon = L.icon({
+                iconUrl: markerData.icon.url,
+                iconSize: markerData.icon.size,
+                iconAnchor: markerData.icon.anchor
+            });
+
+            // Construction dynamique du HTML de la popup
+            let popupContent = `<div class="popup-container">`;
+            
+            markerData.villes.forEach(cityKey => {
+                const city = citiesConfig[cityKey];
+                if (city) {
+                    const cityName = city.nom || cityKey;
+                    // Échappement des guillemets simples au cas où le nom de la clé en contient
+                    const safeKey = cityKey.replace(/'/g, "\\'");
+                    
+                    popupContent += `
+                        <div class="popup-group" style="margin-bottom: 8px;">
+                            <button onclick="choisir('${safeKey}')">Choisir ${cityName}</button>
+                            <button onclick="choisir_inverse('${safeKey}')">Choisir ${cityName} (inverse)</button>
+                        </div>
+                    `;
+                }
+            });
+
+            popupContent += `</div>`;
+
+            // Ajout du marqueur sur la carte
+            L.marker(markerData.coords, { icon: customIcon })
+                .addTo(mymap)
+                .bindPopup(popupContent);
+        });
+
+    } catch (err) {
+        console.error("Erreur lors du chargement des configurations JSON :", err);
+    }
+}
+
+initMap();

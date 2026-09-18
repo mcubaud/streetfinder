@@ -1,0 +1,42 @@
+[
+  {
+    "id": "lyon",
+    "coords": [45.75728373443727, 4.849433898925782],
+    "icon": {
+      "url": "blasons/Blason_Ville_fr_Lyon.svg",
+      "size": [60, 70],
+      "anchor": [30, 35]
+    },
+    "villes": ["Lyon"]
+  },
+  {
+    "id": "rennes",
+    "coords": [48.11105621460431, -1.676739113603782],
+    "icon": {
+      "url": "blasons/Blason_Ville_fr_Rennes.svg",
+      "size": [60, 70],
+      "anchor": [30, 35]
+    },
+    "villes": ["Rennes"]
+  },
+  {
+    "id": "fontenay_vincennes",
+    "coords": [48.84853017902008, 2.462542359272333],
+    "icon": {
+      "url": "blasons/fontenay.png",
+      "size": [60, 70],
+      "anchor": [30, 35]
+    },
+    "villes": ["Fontenay", "Vincennes", "Fontenay et Vincennes"]
+  },
+  {
+    "id": "paris",
+    "coords": [48.85510792606994, 2.3468993353510865],
+    "icon": {
+      "url": "blasons/Blason_paris_75.png",
+      "size": [60, 70],
+      "anchor": [30, 35]
+    },
+    "villes": ["Paris", "Paris 5", "Paris 12", "Paris 19", "Bois de Vincennes"]
+  }
+]
