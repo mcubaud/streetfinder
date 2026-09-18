@@ -1,0 +1,37 @@
+{
+  "Lyon": {
+    "coords": [45.75728373443727, 4.849433898925782],
+    "file": "rues.geojson",
+    "nom": "Lyon",
+    "zoom": 13,
+    "inv_lonlat": true
+  },
+  "Rennes": {
+    "coords": [48.11105621460431, -1.676739113603782],
+    "file": "rues_rennes.geojson",
+    "nom": "Rennes",
+    "zoom": 13,
+    "inv_lonlat": true
+  },
+  "Fontenay et Vincennes": {
+    "coords": [48.84998735534551, 2.4531255994843977],
+    "file": "rues_vincennes_fontenay.geojson",
+    "nom": "Vincennes et Fontenay-sous-Bois",
+    "zoom": 14,
+    "inv_lonlat": true
+  },
+  "Vincennes": {
+    "coords": [48.847255053350516, 2.4395771792687957],
+    "file": "rues_vincennes.geojson",
+    "nom": "Vincennes",
+    "zoom": 15,
+    "inv_lonlat": true
+  },
+  "Fontenay": {
+    "coords": [48.848990, 2.474642],
+    "file": "rues_fontenay.geojson",
+    "nom": "Fontenay-sous-Bois",
+    "zoom": 15,
+    "inv_lonlat": true
+  }
+}
