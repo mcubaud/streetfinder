@@ -5,7 +5,6 @@ var REGEX_MILITARY = /\bamiral |\bcaporal |\blieutenant |\bcapitaine |\bmajor |\
 
 // --- ETAT GLOBAL ---
 var lieu = localStorage.getItem("lieu") || "Rennes";
-var config = CITIES_CONFIG[lieu] || CITIES_CONFIG["Rennes"];
 
 let totalLength = 0;
 let findLength = 0;
