@@ -33,7 +33,7 @@
     "id": "paris",
     "coords": [48.85510792606994, 2.3468993353510865],
     "icon": {
-      "url": "blasons/Blason_paris_75.png",
+      "url": "blasons/Blason_paris_75.svg",
       "size": [60, 70],
       "anchor": [30, 35]
     },
