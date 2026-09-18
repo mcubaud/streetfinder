@@ -23,8 +23,10 @@ var FontenayIcon = L.icon({
 });
 
 var Lyon = "Lyon";
-var Rennes = "Rennes"
-var Fontenay = "Fontenay"
+var Rennes = "Rennes";
+var FontenayVincennes = "Fontenay et Vincennes";
+var Vincennes= "Vincennes";
+var Fontenay = "Fontenay";
 
 L.marker([45.75728373443727, 4.849433898925782], {icon: LyonIcon}).addTo(mymap)
     .bindPopup('<button onclick="choisir(Lyon)">Choisir Lyon</button><button onclick="choisir_inverse(Lyon)">Choisir Lyon (inverse)</button>')
@@ -34,7 +36,7 @@ L.marker([48.11105621460431, -1.676739113603782], {icon: RennesIcon}).addTo(myma
     .bindPopup('<button onclick="choisir(Rennes)">Choisir Rennes</button><button onclick="choisir_inverse(Rennes)">Choisir Rennes (inverse)</button>')
 
 L.marker([48.84853017902008, 2.462542359272333], {icon: FontenayIcon}).addTo(mymap)
-    .bindPopup('<button onclick="choisir(Fontenay)">Choisir Fontenay-sous-Bois et Vincennes</button><button onclick="choisir_inverse(Fontenay)">Choisir  Fontenay-sous-Bois et Vincennes (inverse)</button>')
+    .bindPopup('<button onclick="choisir(Fontenay)">Choisir Fontenay-sous-Bois</button><button onclick="choisir_inverse(Fontenay)">Choisir Fontenay-sous-Bois (inverse)</button><button onclick="choisir(Vincennes)">Choisir Vincennes</button><button onclick="choisir_inverse(Vincennes)">Choisir Vincennes (inverse)</button><button onclick="choisir(FontenayVincennes)">Choisir Fontenay-sous-Bois et Vincennes</button><button onclick="choisir_inverse(FontenayVincennes)">Choisir Fontenay-sous-Bois et Vincennes (inverse)</button>')
 
 
 function choisir(lieu){
