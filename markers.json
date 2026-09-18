@@ -24,8 +24,8 @@
     "coords": [48.84853017902008, 2.462542359272333],
     "icon": {
       "url": "blasons/fontenay.png",
-      "size": [60, 70],
-      "anchor": [30, 35]
+      "size": [30, 35],
+      "anchor": [15, 17.5]
     },
     "villes": ["Fontenay", "Vincennes", "Fontenay et Vincennes"]
   },
@@ -34,8 +34,8 @@
     "coords": [48.85510792606994, 2.3468993353510865],
     "icon": {
       "url": "blasons/Blason_paris_75.svg",
-      "size": [60, 70],
-      "anchor": [30, 35]
+      "size": [30, 35],
+      "anchor": [15, 17.5]
     },
     "villes": ["Paris", "Paris 5", "Paris 12", "Paris 19", "Bois de Vincennes"]
   }

@@ -29,35 +29,35 @@
   },
   "Paris": {
     "coords": [48.85510792606994, 2.3468993353510865],
-    "file": "geojsons/rues_paris.geojson",
+    "file": "geojsons/paris/rues_paris.geojson",
     "nom": "Paris",
     "zoom": 13,
     "inv_lonlat": true
   },
   "Paris 5": {
     "coords": [48.84925330574941, 2.3485626833373603],
-    "file": "geojsons/rues_paris_5.geojson",
+    "file": "geojsons/paris/rues_paris_5.geojson",
     "nom": "Paris 5e arrondissement",
     "zoom": 15,
     "inv_lonlat": true
   },
   "Paris 12": {
     "coords": [48.84230826333247, 2.4013177827977175],
-    "file": "geojsons/rues_paris_12.geojson",
+    "file": "geojsons/paris/rues_paris_12.geojson",
     "nom": "Paris 12e arrondissement",
     "zoom": 15,
     "inv_lonlat": true
   },
   "Paris 19": {
     "coords": [48.85336097294985, 2.4043828309965134],
-    "file": "geojsons/rues_paris_19.geojson",
+    "file": "geojsons/paris/rues_paris_19.geojson",
     "nom": "Paris 19e arrondissement",
     "zoom": 15,
     "inv_lonlat": true
   },
   "Bois de Vincennes": {
     "coords": [48.833873, 2.445327],
-    "file": "geojsons/rues_paris_bois_de_vincennes.geojson",
+    "file": "geojsons/paris/rues_paris_bois_de_vincennes.geojson",
     "nom": "Bois de Vincennes",
     "zoom": 15,
     "inv_lonlat": true
