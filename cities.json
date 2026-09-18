@@ -27,6 +27,13 @@
     "zoom": 15,
     "inv_lonlat": true
   },
+  "Fontenay": {
+    "coords": [48.848990, 2.474642],
+    "file": "rues_fontenay.geojson",
+    "nom": "Fontenay-sous-Bois",
+    "zoom": 15,
+    "inv_lonlat": true
+  },
   "Paris": {
     "coords": [48.85510792606994, 2.3468993353510865],
     "file": "geojsons/paris/rues_paris.geojson",
