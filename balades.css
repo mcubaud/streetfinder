@@ -786,3 +786,82 @@ input[type=range] {
     100%{height: 0%;}
 }
 
+/* ==========================================
+   ADAPTATION MOBILE (Écrans <= 768px)
+   ========================================== */
+@media screen and (max-width: 768px) {
+
+    body {
+        /* On passe la structure globale en flux vertical classique */
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    /* --- En-tête --- */
+    header {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        padding: 8px;
+        background-size: cover;
+    }
+
+    #titre h1 {
+        font-size: 1.2rem;
+    }
+
+    #boutons {
+        grid-row: auto;
+        grid-column: auto;
+        margin-top: 5px;
+    }
+
+    /* --- Zone de jeu (Carte + Liste) --- */
+    #ecran_du_jeu {
+        /* On remplace la grille 2 colonnes par une disposition verticale */
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #mapid {
+        width: 100%;
+        height: 55vh; /* La carte prend 55% de la hauteur de l'écran */
+        margin-left: 0;
+        margin-top: 0;
+    }
+
+    #container_of_list_of_street {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    #div_found {
+        height: 180px; /* Réduction de la hauteur du bloc sur mobile */
+        margin: 0 0 10px 0;
+    }
+
+    /* --- Zone de saisie d'adresse --- */
+    #recherche {
+        padding: 10px;
+    }
+
+    #boutons_milieu_bas, #barre_adresse {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    #inputAdresse {
+        max-width: 65%;
+        font-size: 16px; /* Empêche le zoom automatique sur navigateur iOS */
+        padding: 8px;
+    }
+
+    #btn-recherche {
+        max-width: 30%;
+        font-size: 14px;
+    }
+}

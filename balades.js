@@ -275,3 +275,9 @@ function downloadObjectAsJson(exportObj, exportName) {
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
+
+window.addEventListener('resize', function() {
+    if (typeof mymap !== 'undefined') {
+        mymap.invalidateSize();
+    }
+});
