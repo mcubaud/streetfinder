@@ -16,10 +16,9 @@ var trouvesUniques = [];
 
 // --- INITIALISATION TITRE ET CARTE ---
 console.log(lieu);
-document.getElementById("titre").children[0].innerHTML += lieu;
 document.title += ` ${lieu}`;
 
-var mymap = L.map('mapid').setView(config.coords, 13);
+var mymap = L.map('mapid')
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?key=cb1_3our_1_ff49ad376f6ec9bfd85eb768', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -36,6 +35,8 @@ async function initData() {
             lieu = Object.keys(CITIES_CONFIG)[0];
         }
         config = CITIES_CONFIG[lieu];
+        mymap.setView(config.coords, config.zoom);
+        document.getElementById("titre").children[0].innerHTML += config.nom;
         
         var response = await fetch(config.file);
         var jsonBalades = await response.json();
