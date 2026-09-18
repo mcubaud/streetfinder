@@ -148,30 +148,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        // --- CONFIGURATION PAR VILLE ---
-        var CITIES_CONFIG = {
-            Lyon: {
-                coords: [45.75728373443727, 4.849433898925782],
-                file: "rues.geojson",
-                nom: "Lyon",
-                zoom: 13,
-                inv_lonlat: true
-            },
-            Rennes: {
-                coords: [48.11105621460431, -1.676739113603782],
-                file: "rues_rennes.geojson",
-                nom: "Rennes",
-                zoom: 13,
-                inv_lonlat: true
-            },
-            Fontenay: {
-                coords: [48.84998735534551, 2.4531255994843977],
-                file: "rues_vincennes_fontenay.geojson",
-                nom: "Vincennes et Fontenay-sous-Bois",
-                zoom: 14,
-                inv_lonlat: true
-            }
-        };
+        
         
         // --- CONSTANTES REGEX (compilées une fois) ---
         var REGEX_RUES = /\brue |\bavenue |\bboulevard |\bcours |\bplace |\bimpasse |\ballée |\bruelle |\bpassage |\bpont |\bmontée |\bquai |\btunnel |\bgrande rue |\bmontee |\ballee |\bbretelle |\bmail |\bcite |\banse |\bcarrefour |\bchaussee |\bchemin |\bclos |\bcote |\bcour |\bcours |\bdegre |\bdescente |\bdreve |\bescoussiere |\besplanade |\bgaffe |\bgrand route |\bliaison |\bplacette |\bpromenade |\bresidence |\brang |\brampe |\brond point |\broute |\bruelle |\bsente |\bsentier |\bsquare |\btraverse |\bvenelle |\bvoie |\bberge |\bdigue |\bpasserelle |\bvilla /g;
@@ -179,7 +156,8 @@
         var REGEX_MILITARY = /\bamiral |\bcaporal |\blieutenant |\bcapitaine |\bmajor |\bgénéral |\bgeneral |\bcolonel |\bmarechal |\blieutenant colonel |\bsergent |\bsergent chef |\badjudant |\bsous lieutenant |\bcommandant |\bpresident /g;
         // --- PARAMÈTRES & ÉTAT DU JEU ---
         var lieu = localStorage.getItem("lieu") || "Rennes";
-        var config = CITIES_CONFIG[lieu] || CITIES_CONFIG["Rennes"];
+        var CITIES_CONFIG = {};
+        var config = null;
         
         var initialAttempts = parseInt(localStorage.getItem("initial_attempts")) || 3;
         let attemptsLeft = initialAttempts;
@@ -211,11 +189,10 @@
         let targetStreetName = "";
         
         // --- INITIALISATION DE LA CARTE ---
-        console.log(lieu);
-        document.getElementById("titre").children[0].innerHTML += config.nom;
+        console.log(lieu);;
         document.title += ` ${lieu}`;
         
-        var mymap = L.map('mapid').setView(config.coords, config.zoom);
+        var mymap = L.map('mapid')
         
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?key=cb1_3our_1_ff49ad376f6ec9bfd85eb768', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -224,6 +201,13 @@
         // --- CHARGEMENT ET DÉMARRAGE ---
         async function initGame() {
             try {
+
+                const citiesResponse = await fetch("cities.json");
+                CITIES_CONFIG = await citiesResponse.json();
+                config = CITIES_CONFIG[lieu] || CITIES_CONFIG["Rennes"];
+                mymap.setView(config.coords, config.zoom);
+                document.getElementById("titre").children[0].innerHTML += config.nom
+                
                 var response = await fetch(config.file);
                 var data = await response.json();
                 let array = sortStreet(data.features, mode);
@@ -580,6 +564,11 @@
                 return;
             }
         
+            // Construction dynamique des options de villes à partir du JSON
+            const cityOptionsHtml = Object.keys(CITIES_CONFIG)
+                .map(key => `<option value="${key}" ${lieu === key ? "selected" : ""}>${CITIES_CONFIG[key].nom}</option>`)
+                .join("");
+        
             divSettings = document.createElement("div");
             divSettings.id = "div_settings";
             divSettings.innerHTML = `
@@ -588,9 +577,7 @@
                     <div>
                         <label for="choix_lieu">Choix de la ville :</label>
                         <select name="choix_lieu" id="choix_lieu">
-                            <option value="Rennes" ${lieu === "Rennes" ? "selected" : ""}>Rennes</option>
-                            <option value="Lyon" ${lieu === "Lyon" ? "selected" : ""}>Lyon</option>
-                            <option value="Fontenay" ${lieu === "Fontenay" ? "selected" : ""}>Fontenay</option>
+                            ${cityOptionsHtml}
                         </select>
                     </div>
                     <div>
@@ -638,9 +625,9 @@
             document.body.appendChild(divSettings);
         
             document.getElementById("timer_type").onchange = function () {
-                var val = this.value;
-                var divChrono = document.getElementById("div_duree_chrono");
-                var inputChrono = document.getElementById("duree_chrono");
+                const val = this.value;
+                const divChrono = document.getElementById("div_duree_chrono");
+                const inputChrono = document.getElementById("duree_chrono");
         
                 if (val === "no") {
                     divChrono.style.visibility = "hidden";
