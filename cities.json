@@ -6,6 +6,13 @@
     "zoom": 13,
     "inv_lonlat": true
   },
+  "Lyon 1er": {
+    "coords": [45.77077757345706, 4.828553475830663],
+    "file": "geojsons/rues_lyon_1.geojson",
+    "nom": "Lyon 1er arrondissement",
+    "zoom": 15,
+    "inv_lonlat": true
+  },
   "Rennes": {
     "coords": [48.11105621460431, -1.676739113603782],
     "file": "geojsons/rues_rennes.geojson",
@@ -29,7 +36,7 @@
   },
   "Fontenay": {
     "coords": [48.848990, 2.474642],
-    "file": "rues_fontenay.geojson",
+    "file": "geojsons/rues_fontenay.geojson",
     "nom": "Fontenay-sous-Bois",
     "zoom": 15,
     "inv_lonlat": true

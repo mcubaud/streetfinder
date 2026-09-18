@@ -7,7 +7,7 @@
       "size": [60, 70],
       "anchor": [30, 35]
     },
-    "villes": ["Lyon"]
+    "villes": ["Lyon", "Lyon 1er"]
   },
   {
     "id": "rennes",
