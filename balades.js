@@ -129,7 +129,7 @@ function chercher() {
                 if (polyline.wiki) {
                     var [langue, page] = polyline.wiki.split(":");
                     polyline.bindPopup(
-                        `<iframe style='height:400px; width:100%; border:none;' src='https://${langue}.m.wikipedia.org/wiki/${page}'></iframe>`
+                        `<iframe style='height:400px; width:800px; border:none;' src='https://${langue}.m.wikipedia.org/wiki/${page}'></iframe>`
                     );
                 }
 
@@ -250,6 +250,7 @@ function addInListFound(name, thisPolyline) {
 
     li.onclick = () => {
         thisPolyline.openTooltip();
+        thisPolyline.openPopup();
         var latLngs = thisPolyline.getLatLngs();
         if (latLngs.length > 0) {
             if(latLngs.lat){
