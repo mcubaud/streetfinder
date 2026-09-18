@@ -252,7 +252,11 @@ function addInListFound(name, thisPolyline) {
         thisPolyline.openTooltip();
         var latLngs = thisPolyline.getLatLngs();
         if (latLngs.length > 0) {
-            mymap.panTo(latLngs[0]);
+            if(latLngs.lat){
+                mymap.panTo(latLngs[0]);
+            }else{//multi polyline
+                 mymap.panTo(latLngs[0][0]);
+            }
         }
     };
 
