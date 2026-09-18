@@ -1,23 +1,4 @@
-// --- CONFIGURATION PAR VILLE ---
-var CITIES_CONFIG = {
-    Lyon: {
-        coords: [45.75728373443727, 4.849433898925782],
-        file: "rues.geojson",
-        inv_lonlat: true
-    },
-    Rennes: {
-        coords: [48.11105621460431, -1.676739113603782],
-        file: "rues_rennes.geojson",
-        inv_lonlat: true
-    },
-    Fontenay: {
-        coords: [48.84998735534551, 2.4531255994843977],
-        file: "rues_vincennes_fontenay.geojson",
-        inv_lonlat: true
-    }
-};
-
-// --- varANTES REGEX (compilées une fois) ---
+// --- CONSTANTES REGEX (compilées une fois) ---
 var REGEX_RUES = /\brue |\bavenue |\bboulevard |\bcours |\bplace |\bimpasse |\ballée |\bruelle |\bpassage |\bpont |\bmontée |\bquai |\btunnel |\bgrande rue |\bmontee |\ballee |\bbretelle |\bmail |\bcite |\banse |\bcarrefour |\bchaussee |\bchemin |\bclos |\bcote |\bcour |\bcours |\bdegre |\bdescente |\bdreve |\bescoussiere |\besplanade |\bgaffe |\bgrand route |\bliaison |\bplacette |\bpromenade |\bresidence |\brang |\brampe |\brond point |\broute |\bruelle |\bsente |\bsentier |\bsquare |\btraverse |\bvenelle |\bvoie |\bberge |\bdigue |\bpasserelle |\bvilla /g;
 var REGEX_STOP_WORDS = /\ble |\bla |\bl' |\bles |\bde |\bdu |\bdes |\bd' |\bun |\bune |\bl |\bd /g;
 var REGEX_MILITARY = /\bamiral |\bcaporal |\blieutenant |\bcapitaine |\bmajor |\bgénéral |\bgeneral |\bcolonel |\bmarechal |\blieutenant colonel |\bsergent |\bsergent chef |\badjudant |\bsous lieutenant |\bcommandant |\bpresident /g;
@@ -48,6 +29,15 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?ke
 // --- CHARGEMENT ET AFFICHAGE DES DONNÉES ---
 async function initData() {
     try {
+        const citiesResponse = await fetch("cities.json");
+        CITIES_CONFIG = await citiesResponse.json();
+
+        // Si le lieu sauvegardé n'existe pas dans le JSON, fallback sur la 1ère ville
+        if (!CITIES_CONFIG[lieu]) {
+            lieu = Object.keys(CITIES_CONFIG)[0];
+        }
+        config = CITIES_CONFIG[lieu];
+        
         var response = await fetch(config.file);
         var jsonBalades = await response.json();
         
