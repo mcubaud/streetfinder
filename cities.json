@@ -1,63 +1,63 @@
 {
   "Lyon": {
     "coords": [45.75728373443727, 4.849433898925782],
-    "file": "geojson/rues_lyon.geojson",
+    "file": "geojsons/rues_lyon.geojson",
     "nom": "Lyon",
     "zoom": 13,
     "inv_lonlat": true
   },
   "Rennes": {
     "coords": [48.11105621460431, -1.676739113603782],
-    "file": "geojson/rues_rennes.geojson",
+    "file": "geojsons/rues_rennes.geojson",
     "nom": "Rennes",
     "zoom": 13,
     "inv_lonlat": true
   },
   "Fontenay et Vincennes": {
     "coords": [48.84998735534551, 2.4531255994843977],
-    "file": "geojson/rues_vincennes_fontenay.geojson",
+    "file": "geojsons/rues_vincennes_fontenay.geojson",
     "nom": "Vincennes et Fontenay-sous-Bois",
     "zoom": 14,
     "inv_lonlat": true
   },
   "Vincennes": {
     "coords": [48.847255053350516, 2.4395771792687957],
-    "file": "geojson/rues_vincennes.geojson",
+    "file": "geojsons/rues_vincennes.geojson",
     "nom": "Vincennes",
     "zoom": 15,
     "inv_lonlat": true
   },
   "Paris": {
     "coords": [48.85510792606994, 2.3468993353510865],
-    "file": "geojson/rues_paris.geojson",
+    "file": "geojsons/rues_paris.geojson",
     "nom": "Paris",
     "zoom": 13,
     "inv_lonlat": true
   },
   "Paris 5": {
     "coords": [48.84925330574941, 2.3485626833373603],
-    "file": "geojson/rues_paris_5.geojson",
+    "file": "geojsons/rues_paris_5.geojson",
     "nom": "Paris 5e arrondissement",
     "zoom": 15,
     "inv_lonlat": true
   },
   "Paris 12": {
     "coords": [48.84230826333247, 2.4013177827977175],
-    "file": "geojson/rues_paris_12.geojson",
+    "file": "geojsons/rues_paris_12.geojson",
     "nom": "Paris 12e arrondissement",
     "zoom": 15,
     "inv_lonlat": true
   },
   "Paris 19": {
     "coords": [48.85336097294985, 2.4043828309965134],
-    "file": "geojson/rues_paris_19.geojson",
+    "file": "geojsons/rues_paris_19.geojson",
     "nom": "Paris 19e arrondissement",
     "zoom": 15,
     "inv_lonlat": true
   },
   "Bois de Vincennes": {
     "coords": [48.833873, 2.445327],
-    "file": "geojson/rues_paris_bois_de_vincennes.geojson",
+    "file": "geojsons/rues_paris_bois_de_vincennes.geojson",
     "nom": "Bois de Vincennes",
     "zoom": 15,
     "inv_lonlat": true
