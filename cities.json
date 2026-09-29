@@ -62,10 +62,10 @@
     "zoom": 15,
     "inv_lonlat": true
   },
-  "Paris 19": {
+  "Paris 20": {
     "coords": [48.85336097294985, 2.4043828309965134],
-    "file": "geojsons/paris/rues_paris_19.geojson",
-    "nom": "Paris 19e arrondissement",
+    "file": "geojsons/paris/rues_paris_20.geojson",
+    "nom": "Paris 20e arrondissement",
     "zoom": 15,
     "inv_lonlat": true
   },
